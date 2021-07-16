@@ -77,9 +77,7 @@ indexPairs   = matchFeaturesInRadius(binaryFeatures(lastKeyFrameFeatures(isInIma
     binaryFeatures(currFeatures.Features), currPoints, projectedPoints, searchRadius, ...
     'MatchThreshold', 40, 'MaxRatio', 0.8, 'Unique', true);
 
-size(indexPairs, 1)
-
-if size(indexPairs, 1) < 10
+if size(indexPairs, 1) < 20
     currPose=[];
     mapPointIdx=[];
     featureIdx=[];
