@@ -1,5 +1,5 @@
 # slammy repository
-<img src="assets/slammy_portrait.jpg" alt="slammy_portrait" width="250"/>
+<img src="assets/slammy_portrait.jpg" alt="slammy_portrait" width="500"/>
 
 This repository contains stuffs for the slam course at the University of Stuttgart. Three parts are
 currently available:
