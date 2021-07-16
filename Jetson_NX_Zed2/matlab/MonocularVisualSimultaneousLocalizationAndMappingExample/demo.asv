@@ -1,0 +1,19 @@
+clc
+clear
+close all
+%%
+bag=rosbag('2021-06-25-16-57-50_first_loop_joint_test_camera.bag');
+
+info_message=select(bag,'Topic','/zed2/zed_node/left/camera_info');
+data=readMessages(info_message);
+
+img_message=select(bag,'Topic','/zed2/zed_node/left/image_rect_gray');
+data=readMessages(img_message);
+
+mkdir('2021-06-25-16-57-50_first_loop_joint_test_camera')
+
+for i=1:img_message.NumMessages
+    image = readImage(data{i,1});
+    %imshow(image);
+    imwrite(A,'2021-06-25-16-57-50_first_loop_joint_test_camera/myGray.png');
+end
