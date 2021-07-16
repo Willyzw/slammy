@@ -65,3 +65,7 @@
 
 - Run DSO
   - `rosrun dso_ros dso_live image:=/zed2/zed_node/rgb/image_rect_gray calib=/home/jetson/Software/src/dso_ros/camera.txt mode=1`
+
+# Record rosbag file
+- Terminal 1: launch the zed2 driver with `roslaunch zed_wrapper zed2.launch`
+- Terminal 2: start the recording with `sudo ./data/record.sh`(sudo for correcting the system date)
