@@ -45,3 +45,5 @@ X[m],Y[m],Heading [deg],Time,piX,piY,Path_to_Image
 # Coordinate System
 The coordinate system is defined as follows:<br>
 <img src="assets/slammy_office_crs.jpg" alt="slammy_office_crs" width="500"/>
+
+Note: Due to the homography, this transformation is only valid for objects with Z=0.4m. This is equal to height of the ArUco marker in all images.
