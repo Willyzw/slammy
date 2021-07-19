@@ -13,6 +13,20 @@ The calibrated images are in [image_seq_linear_rectangle](image_seq_linear_recta
 Calibration workflow: <br>
 Raw -> Linear (via fis eye calibration) <br>
 Linear -> Rectangular (via homography and known ground points).
+
+# Transformation from pixel to world
+The transformation of pixel coordinate `x = [x_pix y_pix]` to a world coordinate `X = [x_world y_world]` can be done by: `X=R*x+t` with:
+```
+R =
+  -1.1096e-06    -0.001002
+  -0.00099834  -4.9957e-06
+```
+and
+```
+t =
+       5.0288       7.4108
+```
+.
 # Path
 The file [slammy_ground_truth_two_loops.txt](slammy_ground_truth_two_loops.txt) contains the path world and pixel coordinates, along with the estimated pose and the image.
 ```
