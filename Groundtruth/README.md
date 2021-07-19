@@ -2,7 +2,7 @@
 
 The ground truth was captured via a GoPro, by tracking an ArUco marker's pose (Original ArUco, id=1, 100mm).
 
-<img src="assets/slammy_ground_truth_two_loops.gif" alt="slammy_ground_truth_two_loops.gif"  height="500"/> </br>
+<img src="assets/slammy_ground_truth_two_loops.gif" alt="slammy_ground_truth_two_loops.gif" /> </br>
 Video: [assets/slammy_ground_truth_two_loops.avi](assets/slammy_ground_truth_two_loops.avi)
 
 # Calibrated images
