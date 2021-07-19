@@ -22,6 +22,9 @@ if you never connected to your local wifi, use hdmi mouse and keyboard
 ## Record a ROS bag
 `./record.sh`
 
+[Rikirobot\rosbag\two_loops_robot\2021-07-16-15-31-07_two_loops_robot.bag](Rikirobot\rosbag\two_loops_robot\2021-07-16-15-31-07_two_loops_robot.bag) Contains the robots sensor data from the "two_loops" run.
+
+
 ## Some use full links
 
 English

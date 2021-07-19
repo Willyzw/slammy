@@ -2,7 +2,7 @@
 
 The ground truth was captured via a GoPro, by tracking an ArUco marker's pose (Original ArUco, id=1, 100mm).
 
-<img src="assets/slammy_ground_truth_two_loops.gif" alt="slammy_ground_truth_two_loops.gif"  hight="500"/> </br>
+<img src="assets/slammy_ground_truth_two_loops.gif" alt="slammy_ground_truth_two_loops.gif"  height="500"/> </br>
 Video: [assets/slammy_ground_truth_two_loops.avi](assets/slammy_ground_truth_two_loops.avi)
 
 # Calibrated images
@@ -26,7 +26,7 @@ and
 t =
        5.0288       7.4108
 ```
-.
+Note: Due to the homography, this transformation is only valid for objects with Z=0.4m. This is equal to height of the ArUco marker in all images.
 # Path
 The file [slammy_ground_truth_two_loops.txt](slammy_ground_truth_two_loops.txt) contains the path world and pixel coordinates, along with the estimated pose and the image.
 ```
