@@ -1,0 +1,33 @@
+# Ground truth
+
+The ground truth was captured via a GoPro, tracking an ArUco marker (Original ArUco, id=1, 100mm).
+
+<img src="assets/slammy_ground_truth_two_loops.gif" alt="slammy_ground_truth_two_loops.gif"  hight="500"/> </br>
+Video: [assets/slammy_ground_truth_two_loops.avi](assets/slammy_ground_truth_two_loops.avi)
+
+# Calibrated images
+The calibrated images are in [image_seq_linear_rectangle](image_seq_linear_rectangle)
+
+<img src="assets/slammy_cam_calibartion_workflow.jpg" alt="slammy_cam_calibartion_workflow" width="900"/>
+
+Calibration workflow: <br>
+Raw -> Linear (via fis eye calibration) <br>
+Linear -> Rectangular (via homography and known ground points).
+# Path
+The file [slammy_ground_truth_two_loops.txt](slammy_ground_truth_two_loops.txt) contains the path world and pixel coordinates, along with the estimated pose and the image.
+```
+X[m],Y[m],Heading [deg],Time,piX,piY,Path_to_Image
+0.005,-0.003,7.2,16-Jul-2021 15:30:51,7402,5006,G0019266_linear_linear_rectangle.jpg
+0.004,-0.003,5.9,16-Jul-2021 15:30:51,7401,5006,G0019267_linear_linear_rectangle.jpg
+0.005,-0.003,7.2,16-Jul-2021 15:30:52,7402,5006,G0019268_linear_linear_rectangle.jpg
+0.005,-0.003,6.5,16-Jul-2021 15:30:52,7401,5006,G0019269_linear_linear_rectangle.jpg
+0.004,-0.004,6.6,16-Jul-2021 15:30:53,7402,5006,G0019270_linear_linear_rectangle.jpg
+0.005,-0.003,7.7,16-Jul-2021 15:30:54,7402,5006,G0019271_linear_linear_rectangle.jpg
+0.004,-0.003,6.6,16-Jul-2021 15:30:54,7402,5006,G0019272_linear_linear_rectangle.jpg
+0.005,-0.003,7.8,16-Jul-2021 15:30:54,7401,5006,G0019273_linear_linear_rectangle.jpg
+...
+```
+
+# Coordinate System
+The coordinate system is defined as follows:<br>
+<img src="assets/slammy_office_crs.jpg" alt="slammy_office_crs" width="500"/>
