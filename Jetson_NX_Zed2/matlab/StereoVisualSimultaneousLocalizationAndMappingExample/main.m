@@ -101,17 +101,32 @@ initialPoseData = load('initialPose.mat');
 initialPose     = initialPoseData.initialPose;
 
 % Create a stereoParameters object to store the stereo camera parameters.
-% The intrinsics for the dataset can be found at the following page:
-% http://asrl.utias.utoronto.ca/datasets/2020-vtr-dataset/text_files/camera_parameters.txt
-focalLength     = [263.9171, 263.9171];    % in units of pixels
-principalPoint  = [365.8315, 181.5215];    % in units of pixels
-baseline        = 0.239965;              % specified in meters
-intrinsicMatrix = [focalLength(1), 0, 0; ...
-    0, focalLength(2), 0; ...
-    principalPoint(1), principalPoint(2), 1];
-imageSize       = size(currILeft,[1,2]); % in pixels [mrows, ncols]
+% The intrinsics for the dataset can be found on jetson:
+% jetson@jetson $ cat /usr/local/zed/settings/SN29955337.conf 
+% use VGA
+
+% left camera
+focalLengthLeft     = [263.81, 263.6675];    % in units of pixels
+principalPointLeft  = [344.1525, 183.0535];    % in units of pixels 
+intrinsicMatrix = [focalLengthLeft(1), 0, 0; ...
+    0, focalLengthLeft(2), 0; ...
+    principalPointLeft(1), principalPointLeft(2), 1];
+imageSizeLeft       = size(currILeft,[1,2]); % in pixels [mrows, ncols]
 cameraParam     = cameraParameters('IntrinsicMatrix', intrinsicMatrix, 'ImageSize', imageSize);
-intrinsics      = cameraParam.Intrinsics;
+intrinsicsLeft      = cameraParam.Intrinsics;
+
+% right camera
+focalLengthRight     = [263.16, 263.0075];    % in units of pixels
+principalPointRight  = [349.185, 186.1785];    % in units of pixels
+intrinsicMatrixRight = [focalLength(1), 0, 0; ...
+    0, focalLengthRight(2), 0; ...
+    principalPointRight(1), principalPointRight(2), 1];
+imageSize       = size(currIRight,[1,2]); % in pixels [mrows, ncols]
+cameraParamRight     = cameraParameters('IntrinsicMatrix', intrinsicMatrix, 'ImageSize', imageSize);
+intrinsicsRight      = cameraParam.Intrinsics;
+
+baseline        = 0.119925;              % specified in meters
+
 stereoParams    = stereoParameters(cameraParam, cameraParam, eye(3), [-baseline, 0 0]);
 
 % In this example, the images are already undistorted. In a general
@@ -229,7 +244,7 @@ while currFrameIdx < numel(imdsLeft.Files)
     % trackedMapPointsIdx:  Indices of the map points observed in the current left frame 
     % trackedFeatureIdx:    Indices of the corresponding feature points in the current left frame
     [currPose, trackedMapPointsIdx, trackedFeatureIdx] = helperTrackLastKeyFrame(mapPointSet, ...
-        vSetKeyFrames.Views, currFeaturesLeft, currPointsLeft, lastKeyFrameId, intrinsics, scaleFactor);
+        vSetKeyFrames.Views, currFeaturesLeft, currPointsLeft, lastKeyFrameId, intrinsicsLeft, scaleFactor);
     
     if isempty(currPose) || numel(trackedMapPointsIdx) < 30
         currFrameIdx = currFrameIdx + 1;
@@ -246,7 +261,7 @@ while currFrameIdx < numel(imdsLeft.Files)
     else
         [refKeyFrameId, localKeyFrameIds, currPose, trackedMapPointsIdx, trackedFeatureIdx] = ...
             helperTrackLocalMap(mapPointSet, directionAndDepth, vSetKeyFrames, trackedMapPointsIdx, ...
-            trackedFeatureIdx, currPose, currFeaturesLeft, currPointsLeft, intrinsics, scaleFactor, numLevels);
+            trackedFeatureIdx, currPose, currFeaturesLeft, currPointsLeft, intrinsicsLeft, scaleFactor, numLevels);
     end
     
     % Match feature points between the stereo images and get the 3-D world positions
@@ -305,7 +320,7 @@ while currFrameIdx < numel(imdsLeft.Files)
     minNumMatches = 10;
     minParallax   = 0.35;
     [mapPointSet, vSetKeyFrames, triangulatedMapPointsIdx, stereoMapPointsIdx] = helperCreateNewMapPointsStereo( ...
-        mapPointSet, vSetKeyFrames, currKeyFrameId, intrinsics, scaleFactor, minNumMatches, minParallax, ...
+        mapPointSet, vSetKeyFrames, currKeyFrameId, intrinsicsLeft, scaleFactor, minNumMatches, minParallax, ...
         untrackedFeatureIdx, stereoMapPointsIdx);
     
     % Update view direction and depth
@@ -315,7 +330,7 @@ while currFrameIdx < numel(imdsLeft.Files)
     % Local bundle adjustment
     [mapPointSet, directionAndDepth, vSetKeyFrames, triangulatedMapPointsIdx, stereoMapPointsIdx] = ...
         helperLocalBundleAdjustmentStereo(mapPointSet, directionAndDepth, vSetKeyFrames, ...
-        currKeyFrameId, intrinsics, triangulatedMapPointsIdx, stereoMapPointsIdx); 
+        currKeyFrameId, intrinsicsLeft, triangulatedMapPointsIdx, stereoMapPointsIdx); 
     
     % Visualize 3-D world points and camera trajectory
     updatePlot(mapPlot, vSetKeyFrames, mapPointSet);
