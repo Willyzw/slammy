@@ -49,8 +49,10 @@
 % Use two <https://www.mathworks.com/help/matlab/ref/matlab.io.datastore.imagedatastore.html 
 % |imageDatastore|> objects to store the stereo images.
 
-dataFolder     = 'D:\Datasets\rikirobot/2021-06-25-16-57-50_first_loop_joint_test_camera';
-%dataFolder     = 'D:\Datasets\rikirobot/2021-07-16-15-30-46_two_loops_camera';
+% dataFolder     = 'D:\Datasets\rikirobot/2021-06-25-16-57-50_first_loop_joint_test_camera';
+% dataFolder     = 'D:\Datasets\rikirobot/2021-07-16-15-30-46_two_loops_camera';
+dataFolder    = '\\ifpserv\H-Platte\Vorlesungen\master-SLAM\data\2021-07-16-15-30-46_two_loops_camera\';
+
 imgFolderLeft  = [dataFolder, '/left/'];
 imgFolderRight = [dataFolder, '/right/'];
 imdsLeft       = imageDatastore(imgFolderLeft);

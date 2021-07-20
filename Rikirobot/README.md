@@ -25,12 +25,14 @@ pw: `123456`
 
 you might need an ip scanner to find the ip.
 
-if you never connected to your local wifi, use hdmi mouse and keyboard
+If you never connected to your local wifi, use hdmi, mouse and keyboard.
 
 ## Set up the Lidar, odometry and tele op
 `sudo ./Desktop/run_riki.sh`
 
 (sudo to set time).
+
+Content:
 ````
 #!/bin/bash
 

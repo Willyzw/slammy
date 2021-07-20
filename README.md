@@ -17,6 +17,9 @@ More details see [Readme.md](Jetson_NX_Zed2/README.md)
 
 <img src="Jetson_NX_Zed2/assets/slammy_zed_two_loops.gif" alt="slammy_zed_two_loops.gif"  /> </br>
 
+
+<img src="Jetson_NX_Zed2/assets/slammy_zeb_orb_two_loops.gif" alt="slammy_zeb_orb_two_loops.gif"  /> </br>
+
 ## Ground truth
 More details see [Readme.md](Groundtruth/README.md)
 

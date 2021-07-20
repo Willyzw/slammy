@@ -54,7 +54,9 @@
 % the RGB images.
 
 %imageFolder   = ['D:\Datasets\rikirobot\2021-06-25-16-57-50_first_loop_joint_test_camera\left'];
-imageFolder   = ['D:\Datasets\rikirobot\2021-07-16-15-30-46_two_loops_camera\left'];
+imageFolder    = ['D:\Datasets\rikirobot\2021-07-16-15-30-46_two_loops_camera\left'];
+imageFolder     = ['\\ifpserv\H-Platte\Vorlesungen\master-SLAM\data\2021-07-16-15-30-46_two_loops_camera\left'];
+
 imds          = imageDatastore(imageFolder);
 
 % Inspect the first image
