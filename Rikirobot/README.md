@@ -28,10 +28,38 @@ you might need an ip scanner to find the ip.
 if you never connected to your local wifi, use hdmi mouse and keyboard
 
 ## Set up the Lidar, odometry and tele op
-`./Desktop/run_rikirobo.sh`
+`sudo ./Desktop/run_riki.sh`
+
+(sudo to set time).
+````
+#!/bin/bash
+
+#start all stuff for rikirobot
+#user rikirobot
+#pw: 123456
+#usual ip 141.58.125.212
+
+#get ntim
+sudo date -s "$(wget -qSO- --max-redirect=0 google.com 2>&1 | grep Date: | cut -d' ' -f5-8)Z"
+
+
+# start lidar
+roslaunch rplidar_ros rplidar.launch &
+
+# start car with odometry
+roslaunch rikirobot bringup.launch &
+
+# start tele operator (keyboard)
+rosrun teleop_twist_keyboard teleop_twist_keyboard.py &
+````
 
 ## Record a ROS bag
-`./record.sh`
+`./records/rosbag_record.sh`
+
+that runs following commands:
+````
+rosbag record /imu/data /imu/data_raw /imu/mag /imu_filter_madgwick/parameter_descriptions /imu_filter_madgwick/parameter_updates /odom /pid /scan /tf
+````
 
 [Rikirobot\rosbag\two_loops_robot\2021-07-16-15-31-07_two_loops_robot.bag](Rikirobot\rosbag\two_loops_robot\2021-07-16-15-31-07_two_loops_robot.bag) Contains the robots sensor data from the "two_loops" run.
 

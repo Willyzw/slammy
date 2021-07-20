@@ -17,7 +17,7 @@ More details see [Readme.md](Jetson_NX_Zed2/README.md)
 
 <img src="Jetson_NX_Zed2/assets/slammy_zed_two_loops.gif" alt="slammy_zed_two_loops.gif"  /> </br>
 
-## Groundtruth
+## Ground truth
 More details see [Readme.md](Groundtruth/README.md)
 
 The ground truth was captured via a GoPro, by tracking an ArUco marker's pose.
