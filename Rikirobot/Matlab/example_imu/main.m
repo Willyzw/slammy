@@ -8,13 +8,9 @@ bag=rosbag('../../rosbag/two_loops_robot/2021-07-16-15-31-07_two_loops_robot.bag
 bagselect = select(bag, 'Topic', '/imu/data');
 imudata = readMessages(bagselect);
 
-i=1;
-last_time=0;
-X=0
-Y=0
+t(1)= datetime(1970,1,1)+seconds(imudata{1}.Header.Stamp.Sec  )+seconds(imudata{1}.Header.Stamp.Nsec*10e-9  )
 
-t=datetime(1970,1,1)+seconds(imudata{1, 1}.Header.Stamp.Sec  )
-dt=seconds(0.11985)
+
 for i=1:1385
     
     avx(i)=imudata{i}.AngularVelocity.X;
@@ -25,7 +21,7 @@ for i=1:1385
     laz(i)=imudata{i}.LinearAcceleration.Z;
     
 
-    t(i)= t(end)+dt;
+    t(i)= datetime(1970,1,1)+seconds(imudata{i}.Header.Stamp.Sec  )+seconds(imudata{i}.Header.Stamp.Nsec*1e-9  );
     
     i
 end
@@ -58,4 +54,5 @@ hold on
     title('Linear Acceleration')
     grid on
     drawnow
+    
 saveas(gca,'slammy_example_imu.jpg')

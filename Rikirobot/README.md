@@ -87,8 +87,11 @@ Visualize the topic `\odom`, which, contains the accumulated odometry data.
 [Rikirobot\Matlab\example_imu](Rikirobot\Matlab\example_imu)
 
 
-madgwick filtered https://nitinjsanket.github.io/tutorials/attitudeest/madgwick imu data.
+madgwick filtered https://nitinjsanket.github.io/tutorials/attitudeest/madgwick imu data is available under the topic `\imu\data`.
 
-If played from, rosbag an exact timestamp is not available.
+The timestamp is expressed as:
+* stamp.sec: seconds (stamp_secs) since 01-Jan-1970.
+* stamp.nsec: nanoseconds since stamp_secs.
+
 
 <img src="Matlab\example_imu\slammy_example_imu.jpg" alt="slammy_example_imu.jpg"  hight="500"/> </br>
