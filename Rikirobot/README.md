@@ -3,8 +3,19 @@
 For general settings:
 https://ubuntu-mate.org/raspberry-pi/
 
+# Hardware
+<img src="../assets/slammy_scheme.jpg" alt="slammy_scheme" width="500"/>
 
-## How to conect to riki robot via ssh
+<br>
+
+* raspberry pi 3 - Ubuntu Mate
+* RPLIDAR https://www.slamtec.com/en/Lidar/A1
+* IMU + magnetometer
+* 2 Stepper motors with rotary encoder
+* 3S LiPo Battery
+
+
+## How to connect to riki robot via ssh
 
 
 `ssh rikirobot@141.58.125.213`
@@ -35,6 +46,7 @@ https://github.com/ykevin/rikirobot_docs/tree/master/UserManual
 
 
 ## MATLAB examples
+Some exemples of how to use the recorded rosbag in Matlab.
 
 ### Teleop
 
@@ -72,7 +84,7 @@ Use the MATLAB's `lidarSLAM` to evaluate the recorded ROSbag.
 The lidarSLAM class performs simultaneous localization and mapping (SLAM) for lidar scan sensor inputs. The SLAM algorithm takes in lidar scans and attaches them to a node in an underlying pose graph. The algorithm then correlates the scans using scan matching. It also searches for loop closures, where scans overlap previously mapped regions, and optimizes the node poses in the pose graph.
 
 
-<img src="Matlab\example_lidar_slam\slammy_example_lidar_slam.jpg" alt="slammy_example_lidar_slam.jpg"  hight="500"/> </br>
+<img src="Matlab\example_lidar_slam\slammy_example_lidar_slam.jpg" alt="slammy_example_lidar_slam.jpg"  /> </br>
 
 
 ### Odometry
@@ -80,7 +92,7 @@ The lidarSLAM class performs simultaneous localization and mapping (SLAM) for li
 
 Visualize the topic `\odom`, which, contains the accumulated odometry data.
 
-<img src="Matlab\example_odometry\slammy_example_odometry.jpg" alt="slammy_example_odometry.jpg"  hight="500"/> </br>
+<img src="Matlab\example_odometry\slammy_example_odometry.jpg" alt="slammy_example_odometry.jpg"  /> </br>
 
 
 ### Inertial navigation
@@ -94,4 +106,4 @@ The timestamp is expressed as:
 * stamp.nsec: nanoseconds since stamp_secs.
 
 
-<img src="Matlab\example_imu\slammy_example_imu.jpg" alt="slammy_example_imu.jpg"  hight="500"/> </br>
+<img src="Matlab\example_imu\slammy_example_imu.jpg" alt="slammy_example_imu.jpg"  /> </br>
