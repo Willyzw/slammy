@@ -1,27 +1,28 @@
 # Environment setup
 - Flash SD card & first boot configuration e.g. create account
-  - Follow https://developer.nvidia.com/embedded/learn/get-started-jetson-xavier-nx-devkit 
-  - User: jetson; PW: jetson
+  - Follow https://developer.nvidia.com/embedded/learn/get-started-jetson-xavier-nx-devkit
+  - User: `jetson`; PW: `jetson`
+  - `ssh jetson@141.58.125.203`
 
-- Install zsh & oh-my-zsh 
+- Install zsh & oh-my-zsh
   - Follow https://github.com/ohmyzsh/ohmyzsh/wiki (Optional)
 
 - Install ZED SDK
-  - Follow https://www.stereolabs.com/developers/release/ 
+  - Follow https://www.stereolabs.com/developers/release/
   - note: `sudo apt update` needed before executing the install script
   - Executables will be added under `/usr/local/bin` and so directly executable
 
-- Install ROS melodic 
-  - Follow http://wiki.ros.org/melodic/Installation/Ubuntu 
+- Install ROS melodic
+  - Follow http://wiki.ros.org/melodic/Installation/Ubuntu
   - note `sudo apt install python-rosdep` needed for rosdep
   - `sudo apt install python-catkin-tools` needed for catkin_tools
   - remember to add `source /opt....sh` to ~/.bashrc and ~/.zshrc depending on which shell you use
 
-- Install zed-ros-wrapper& zed-ros-examples 
-  - Link: https://github.com/stereolabs/zed-ros-wrapper 
+- Install zed-ros-wrapper& zed-ros-examples
+  - Link: https://github.com/stereolabs/zed-ros-wrapper
   - Link: https://github.com/stereolabs/zed-ros-examples
   - note: cloning to catkin directory `~/Softwares/src`
-  - Compile with `catkin build` 
+  - Compile with `catkin build`
   - Start Zed node with `roslaunch zed_wrapper zed2.launch` (launch `roscore` if needed)
 
 - Visualization in rviz
