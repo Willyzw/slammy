@@ -12,8 +12,16 @@ The calibrated images are in [image_seq_linear_rectangle](image_seq_linear_recta
 
 Calibration workflow: <br>
 Raw -> Linear (via fis eye calibration) <br>
-Linear -> Rectangular (via homography and known ground points).
+Following this: https://www.mathworks.com/help/vision/ug/fisheye-calibration-basics.html
+Linear -> Rectangular (via homography and known ground points).<br>
+As explaine here: https://docs.opencv.org/4.5.2/d9/dab/tutorial_homography.html
 
+# AruCo target tracking
+Use openCV to track an AruCo marker:
+
+https://docs.opencv.org/3.4/d5/dae/tutorial_aruco_detection.html
+
+The marker was roughly located by hand. The exact pixel coordinates and the orientation was then determined in openCV.
 # Transformation from pixel to world
 The transformation of pixel coordinate `x = [x_pix y_pix]` to a world coordinate `X = [x_world y_world]` can be done by: `X=R*x+t` with:
 ```
@@ -44,6 +52,6 @@ X[m],Y[m],Heading [deg],Time,piX,piY,Path_to_Image
 
 # Coordinate System
 The coordinate system is defined as follows:<br>
-<img src="assets/slammy_office_crs.jpg" alt="slammy_office_crs" width="500"/>
+<img src="assets/slammy_office_crs.jpg" alt="slammy_office_crs"/>
 
 Note: Due to the homography, this transformation is only valid for objects with Z=0.4m. This is equal to height of the ArUco marker in all images.

@@ -10,25 +10,30 @@ odomdata = readMessages(bagselect);
 
 figure
 hold on
-title('Odometry \\odom')
+title('Odometry /odom')
 ylabel('Y [m]')
 xlabel('X [m]')
 i=1;
 last_time=0;
-X=0
-Y=0
-while true
-    i=i+1;
+X=[];
+Y=[];
+for i=1:1:length(odomdata)
+ 
         x=odomdata{i}.Pose.Pose.Position.X;
         y=odomdata{i}.Pose.Pose.Position.Y;
         
-        X=x;
-        Y=y;
+        X=[X;x];
+        Y=[Y;y];
         plot(X,Y,'.-r')
         axis equal
         grid on
+        hold off
         drawnow
 
 end
+trajectory=[X,Y];
+%save trajectory
+writematrix(trajectory,'trajectory_odometry_slam_two_loops.txt')
+save('trajectory_odometry_slam_two_loops','trajectory')
 
 saveas(gca,'slammy_example_odometry.jpg')

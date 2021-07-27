@@ -137,3 +137,9 @@ The timestamp is expressed as:
 
 
 <img src="Matlab\example_imu\slammy_example_imu.jpg" alt="slammy_example_imu.jpg"  /> </br>
+
+### Compare trajectories to ground truth
+[Rikirobot\Matlab\example_compare_trajectories](Rikirobot\Matlab\example_compare_trajectories)
+
+
+<img src="Matlab\example_compare_trajectories\example_compare_trajectories.jpg" alt="Matlab\example_compare_trajectories\example_compare_trajectories.jpg"  /> </br>
