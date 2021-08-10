@@ -46,6 +46,10 @@ Volumetric dense mapping: TSDF based volumetric dense mapping is a standard way 
 - Terminal 1: launch the zed2 driver with `roslaunch zed_wrapper zed2.launch`
 - Terminal 2: start the recording with `sudo ./data/record.sh`(sudo for correcting the system date)
 
+The rosbag and the two image sequences of the stereo cameras from the "two_loops" run can be downloaded from here:
+
+https://webdav.ifp.uni-stuttgart.de/s/SycT9Ya96ikBHsS
+
 
 ## How to run ORB-SLAM3
 - Configure ORB-slam3

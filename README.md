@@ -33,7 +33,7 @@ Details about the stereo camera such as:
 * How to get started with the jetson Xavier NX and Zed2 camera
 * A rosbag of the "two_loops" run
 * Examples of mono/binocular ORB slam in Matlab/C++
-* Visualisation of stereo color/depth images and its resulted point cloud:
+* Visualisation of stereo color/depth images and its resulted point cloud
 * Volumetric dense mapping with [Voxblox](https://github.com/ethz-asl/voxblox) based on a pre-estimated trajectory by ORB-SLAM3
 
 Raw Stereo: <br>
