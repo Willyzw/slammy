@@ -12,10 +12,34 @@ currently available:
 ## Rikitrobot + lidar
 More details see [Readme.md](Rikirobot/README.md)
 
+Details about the rover such as:
+* How to get started with the rover
+* How to control the rover
+* How to record a rosbag (including the "two_loops" rosbag)
+* How to play the rosbag in matlab
+* Several examples:
+ * 2d lidar slam
+ * Odometry
+ * Inertial navigation data
+
+
+<img src="Rikirobot\Matlab\example_lidar_slam\slammy_example_lidar_slam.jpg" alt="slammy_example_lidar_slam.jpg"  /> </br>
+
+
 ## Jetson Xavier NX board + Zed2 camera
 More details see [Readme.md](Jetson_NX_Zed2/README.md)
 
+Details about the stereo camera such as:
+* How to get started with the jetson Xavier NX and Zed2 camera
+* A rosbag of the "two_loops" run
+* Examples of mono/binocular ORB slam in Matlab/C++
+* Visualisation of stereo color/depth images and its resulted point cloud:
+* Volumetric dense mapping with [Voxblox](https://github.com/ethz-asl/voxblox) based on a pre-estimated trajectory by ORB-SLAM3
+
+Raw Stereo: <br>
 <img src="Jetson_NX_Zed2/assets/slammy_zed_two_loops_crop.gif" alt="slammy_zed_two_loops.gif" width="600" />
+
+Orb slam: <br>
 <img src="Jetson_NX_Zed2/assets/slammy_zeb_orb_two_loops.gif" alt="slammy_zeb_orb_two_loops.gif"  /> </br>
 
 ## Ground truth
