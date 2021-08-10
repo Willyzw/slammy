@@ -2,14 +2,20 @@
 <img src="assets/slammy_portrait.jpg" alt="slammy_portrait" width="500"/>
 
 
-This repository contains stuffs for the slam course at the University of Stuttgart. Three parts are
-currently available:
-- Rikirobot + Lidar
-- Jetson Xavier NX board + Zed2 camera
-- Gopro for a birdview groundtruth
+This repository contains stuffs for the slam course at the University of Stuttgart. Overall the "Slammy" robot (See its portrait above)
+can be regarded as an "integrated" system/platform but at the same time it is organised modularly. By the functionality, we have for now three sub-systems
+i.e:
 
+- Rikirobot with Lidar: the central part, as it controls the movement of the platform. Connected parts are a Rasperry Pi with Ubuntu 16.04
+and a RPLidar A1 Lidar sensor ([Link](https://www.slamtec.com/en/Lidar/A1)).
+- Visual part: the vision sub-system, supplied by a separate battery. Hardwares are a [Jetson Xavier NX](https://developer.nvidia.com/embedded/jetson-xavier-nx-devkit)
+provides computing power and a [Zed2 camera](https://www.stereolabs.com/zed-2/).
+- Gopro for a birdview groundtruth: a Gopro is mounted on the roof of the room, so while recording, it captures the robot route by tracking the ArUco marker which put on the top of the Slammy
 
-## Rikitrobot + lidar
+Note currently the three sub-systems are temporarily crafted together so they are not yet deeply coupled. But it already fullfills the current requirements, i.e. recording multi-modal data for the course usage.
+As a future work, we might put more effort to develop it into a real integrated smart agent 😊
+
+## Rikitrobot with lidar
 More details see [Readme.md](Rikirobot/README.md)
 
 Details about the rover such as:
@@ -26,11 +32,11 @@ Details about the rover such as:
 <img src="Rikirobot\Matlab\example_lidar_slam\slammy_example_lidar_slam.jpg" alt="slammy_example_lidar_slam.jpg"  /> </br>
 
 
-## Jetson Xavier NX board + Zed2 camera
+## Visual part
 More details see [Readme.md](Jetson_NX_Zed2/README.md)
 
 Details about the stereo camera such as:
-* How to get started with the jetson Xavier NX and Zed2 camera
+* How to get started with the hardware i.e. Jetson Xavier NX board and Zed2 camera
 * A rosbag of the "two_loops" run
 * Examples of mono/binocular ORB slam in Matlab/C++
 * Visualisation of stereo color/depth images and its resulted point cloud
