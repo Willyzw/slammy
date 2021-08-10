@@ -33,11 +33,19 @@ Details about the stereo camera such as:
 * How to get started with the camera/ jetson Xavier
 * A rosbag of the "two_loops" run
 * Examples of mono/binocular ORB slam in Matlab
+* Visualisierung von Stereo-Tiefenbild sowie Punktwolke:
+[![two-loops sequence demo stereo depth and point cloud](http://i3.ytimg.com/vi/XDazW9k8EKY/hqdefault.jpg)](https://www.youtube.com/watch?v=XDazW9k8EKY "2021-07-16: two-loops sequence demo stereo depth and point cloud")
 
 
+
+* Dense-Mapping mit Voxblox und die geschätzte Trajektorie von ORB-slam3: [![ two-loops sequence dense mapping with voxblox](http://i3.ytimg.com/vi/gmNJbwXqh7E/hqdefault.jpg)](https://youtu.be/gmNJbwXqh7E "2021-07-16: two-loops sequence demo stereo depth and point cloud")
+
+
+
+Raw Stereo: <br>
 <img src="Jetson_NX_Zed2/assets/slammy_zed_two_loops.gif" alt="slammy_zed_two_loops.gif"  /> </br>
 
-
+Orb slam: <br>
 <img src="Jetson_NX_Zed2/assets/slammy_zeb_orb_two_loops.gif" alt="slammy_zeb_orb_two_loops.gif"  /> </br>
 
 ## Ground truth
