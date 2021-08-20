@@ -69,6 +69,25 @@ Show contend of a meassege:
 
 `rostopic echo /scan`
 
+````
+/cmd_vel
+/diagnostics
+/imu/data
+/imu/data_raw
+/imu/mag
+/imu_filter_madgwick/parameter_descriptions
+/imu_filter_madgwick/parameter_updates
+/odom
+/pid
+/raw_imu
+/raw_vel
+/rosout
+/rosout_agg
+/scan
+/statistics
+/tf
+````
+
 Show rqt_graph:
 
 `rosrun rqt_graph rqt_graph`
