@@ -152,7 +152,7 @@ Use the numpad to navigate:
 3: Backwards and turn right
 
 
-### Pure Lida SLAM from rosbag
+### Pure Lidar SLAM from rosbag
 [Rikirobot\Matlab\example_lidar_slam](Matlab/example_lidar_slam)
 
 Use the MATLAB's `lidarSLAM` to evaluate the recorded ROSbag.
