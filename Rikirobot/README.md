@@ -16,8 +16,6 @@ https://ubuntu-mate.org/raspberry-pi/
 
 
 ## How to connect to riki robot via ssh
-
-
 `ssh rikirobot@141.58.125.213`
 
 user: `rikirobot`
@@ -54,6 +52,30 @@ roslaunch rikirobot bringup.launch &
 # start tele operator (keyboard)
 rosrun teleop_twist_keyboard teleop_twist_keyboard.py &
 ````
+## connect to master from extern pc (ubuntu)
+
+Set ip to master
+`export ROS_MASTER_URI=http://141.58.125.213:11311`
+
+Set my IP:
+`export ROS_IP=`hostname -I`
+
+## List all topics
+Show all topics:
+
+`rostopic list`
+
+Show contend of a meassege:
+
+`rostopic echo /scan`
+
+Show rqt_graph:
+
+`rosrun rqt_graph rqt_graph`
+
+<img src="../assets/slammy_rqt_graph.png" alt="slammy_rqt_graph" width="500"/>
+
+
 
 ## Record a ROS bag
 `./records/rosbag_record.sh`
@@ -80,7 +102,7 @@ Some exemples of how to use the recorded rosbag in Matlab.
 
 ### Teleop
 
-[Rikirobot\Matlab\example_teleop](Rikirobot\Matlab\example_teleop)
+[Rikirobot\Matlab\example_teleop](Matlab/example_teleop)
 
 Remote control via numpad for slammy.
 Control the robot by publishing ROS messages with the desired linear and angular velocity.
@@ -107,7 +129,7 @@ Use the numpad to navigate:
 
 
 ### Pure Lida SLAM from rosbag
-[Rikirobot\Matlab\example_lidar_slam](Rikirobot\Matlab\example_lidar_slam)
+[Rikirobot\Matlab\example_lidar_slam](Matlab/example_lidar_slam)
 
 Use the MATLAB's `lidarSLAM` to evaluate the recorded ROSbag.
 
@@ -118,7 +140,7 @@ The lidarSLAM class performs simultaneous localization and mapping (SLAM) for li
 
 
 ### Odometry
-[Rikirobot\Matlab\example_odometry](Rikirobot\Matlab\example_odometry)
+[Rikirobot\Matlab\example_odometry](Matlab/example_odometry)
 
 Visualize the topic `\odom`, which, contains the accumulated odometry data.
 
@@ -126,7 +148,7 @@ Visualize the topic `\odom`, which, contains the accumulated odometry data.
 
 
 ### Inertial navigation
-[Rikirobot\Matlab\example_imu](Rikirobot\Matlab\example_imu)
+[Rikirobot\Matlab\example_imu](Matlab/example_imu)
 
 
 madgwick filtered https://nitinjsanket.github.io/tutorials/attitudeest/madgwick imu data is available under the topic `\imu\data`.
@@ -139,7 +161,7 @@ The timestamp is expressed as:
 <img src="Matlab\example_imu\slammy_example_imu.jpg" alt="slammy_example_imu.jpg"  /> </br>
 
 ### Compare trajectories to ground truth
-[Rikirobot\Matlab\example_compare_trajectories](Rikirobot\Matlab\example_compare_trajectories)
+[Rikirobot\Matlab\example_compare_trajectories](Matlab/example_compare_trajectories)
 
 
 <img src="Matlab\example_compare_trajectories\example_compare_trajectories.jpg" alt="Matlab\example_compare_trajectories\example_compare_trajectories.jpg"  /> </br>
