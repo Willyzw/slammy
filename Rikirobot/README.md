@@ -70,6 +70,7 @@ Show contend of a message:
 `rostopic echo /scan`
 
 Output:
+
 ````
 /cmd_vel
 /diagnostics
@@ -92,7 +93,9 @@ Output:
 Show rqt_graph:
 
 `rosrun rqt_graph rqt_graph`
+
 Output:
+
 <img src="../assets/slammy_rqt_graph.png" alt="slammy_rqt_graph" width="500"/>
 
 
@@ -101,6 +104,7 @@ Output:
 `./records/rosbag_record.sh`
 
 that runs following commands:
+
 ````
 rosbag record /imu/data /imu/data_raw /imu/mag /imu_filter_madgwick/parameter_descriptions /imu_filter_madgwick/parameter_updates /odom /pid /scan /tf
 ````
