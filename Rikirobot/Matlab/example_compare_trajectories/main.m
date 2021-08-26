@@ -17,11 +17,7 @@ poses_slam=poses;
 load('../example_odometry/trajectory_odometry_slam_two_loops.mat')
 
 % import trajectory from icp graph slam
-
 load('../example_icp_graph_slam/final_poses_graph_icp.mat')
-
-
-
 
 % import Ground truth
 poses_gt = importfile('../../../Groundtruth/slammy_ground_truth_two_loops.txt')
@@ -50,7 +46,7 @@ plot(Poses(:,1),Poses(:,2),'.-m')
 
 
 
-legend('Lidar SLAM','GT','Odometry','Lidar ICP Graph SLAM')
+legend('Lidar SLAM','GT','Odometry','Lidar ICP Graph SLAM','Location','southoutside'	)
 axis equal
 grid on
-saveas(gca,'example_compare_trajectories.jpg')
+%saveas(gca,'example_compare_trajectories.jpg')
