@@ -37,7 +37,7 @@ angleDiffNewKey = 10*pi/180;
 translDiffNewKey = 0.3;
 
 % number of loop closure conditions per node
-maxNumLoopClosureEdgesPerNode = 1; % 1 ?
+maxNumLoopClosureEdgesPerNode = 3; % 1 ?
 
 % minimum difference of current node id to potential loop closure candidate
 % nodes
@@ -196,6 +196,9 @@ end
 hold on
 Poses = nodeEstimates(pg);
 plot(Poses(:,1),Poses(:,2),'color','r');
+
+% save poses
+save final_poses_graph_icp.mat Poses
 
 
 
