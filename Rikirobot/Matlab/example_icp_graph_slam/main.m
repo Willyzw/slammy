@@ -1,3 +1,8 @@
+% This file is part of Simultaneous Localization and Mapping (SLAM) course
+% at the University of Stuttgart held by institute of navigation (ins) and 
+% institute for photogrammetry (ifp).
+% See https://github.com/Willyzw/slammy for full details.
+% Author: David Skuddis (ifp), 2021
 close all
 clear all
 
