@@ -38,9 +38,11 @@ More details see [Readme.md](Vision/README.md)
 Details about the stereo camera such as:
 * How to get started with the hardware i.e. Jetson Xavier NX board and Zed2 camera
 * A rosbag of the "two_loops" run
-* Examples of mono/binocular ORB slam in Matlab/C++
+* How to run mono/binocular ORB slam in Matlab/C++
+* How to run direct sparse odometry(DSO) in C++
 * Visualisation of stereo color/depth images and its resulted point cloud
 * Volumetric dense mapping with [Voxblox](https://github.com/ethz-asl/voxblox) based on a pre-estimated trajectory by ORB-SLAM3
+* How to extract SuperPoint features and run SuperGlue to match them between image pairs
 
 Raw Stereo: <br>
 <img src="Vision/assets/slammy_zed_two_loops_crop.gif" alt="slammy_zed_two_loops.gif" width="600" />

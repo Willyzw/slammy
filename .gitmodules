@@ -1,0 +1,6 @@
+[submodule "Vision/SuperPoint"]
+	path = Vision/SuperPoint
+	url = https://github.com/Willyzw/SuperPointPretrainedNetwork
+[submodule "Vision/SuperGlue"]
+	path = Vision/SuperGlue
+	url = https://github.com/Willyzw/SuperGluePretrainedNetwork

@@ -121,3 +121,11 @@ One de-factor standard method is to use the TSDF-based volumetric representation
 as can be seen in `configs/voxblox/transformer.h` and `configs/voxblox/transformer.cc`
 - After performing the aboved metioned steps, the voxblox program should be ready to run with `roslaunch voxblox_ros zed2.launch`
 - An example mesh output can be found in `assets/2021-07-17-voxblox-mesh.ply`
+
+
+## How to run SuperPoint & SuperGlue
+- A hands-on notebook is ready to demostrate how the SuperPoint and SuperGlue is performed using the pre-trained model. 
+- SuperPoint \
+<img src="SuperPoint\superpoint-demo.gif" alt="superpoint.gif" width="750"/> </br>
+- SuperGlue \
+<img src="SuperGlue\superglue-demo.gif" alt="superglue.gif" width="500"/> </br>
