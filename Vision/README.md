@@ -126,6 +126,6 @@ as can be seen in `configs/voxblox/transformer.h` and `configs/voxblox/transform
 ## How to run SuperPoint & SuperGlue
 - A hands-on notebook is ready to demostrate how the SuperPoint and SuperGlue is performed using the pre-trained model. 
 - SuperPoint \
-<img src="SuperPoint\superpoint-demo.gif" alt="superpoint.gif" width="750"/> </br>
+<img src="https://github.com/Willyzw/SuperPointPretrainedNetwork/blob/master/superpoint-demo.gif?raw=true" alt="superpoint.gif" width="750"/> </br>
 - SuperGlue \
-<img src="SuperGlue\superglue-demo.gif" alt="superglue.gif" width="500"/> </br>
+<img src="https://github.com/Willyzw/SuperGluePretrainedNetwork/blob/master/superglue-demo.gif?raw=true" alt="superglue.gif" width="500"/> </br>
