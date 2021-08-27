@@ -1,5 +1,5 @@
 % This file is part of Simultaneous Localization and Mapping (SLAM) course
-% at the University of Stuttgart held by institute of navigation (ins) and 
+% at the University of Stuttgart held by institute of navigation (ins) and
 % institute for photogrammetry (ifp).
 % See https://github.com/Willyzw/slammy for full details.
 % Author: David Skuddis (ifp), 2021
@@ -77,20 +77,26 @@ for t = time_start : delta : time_end
         continue;
     end
     
-    % register pcs with icp
+    % register pcs with icp and use last transform as start point
     [tformNew,movingReg,rmse] = pcregistericp(PC_new,PC_old,'MaxIterations',100,'Tolerance',[0.001,0.001],'InitialTransform',tform,'InlierRatio',icpInlierRatio);
     disp(rmse);
+    
+    % if error is bigger than a threshold or the roboter moved more than a
+    % threshold then an error must have occured
     if rmse > 0.35 || norm(tform.Translation(1:2))> 0.5
         disp('Error');
+        break;
     else
         tform=tformNew;
     end
+    
+    % calculate euler angles
     eul = rotm2eul(tform.Rotation,'XYZ');
     
-    % check if current scan is new keyframe
+    %% check if current scan is new keyframe
     if  norm(tform.Translation(1:2)) > translDiffNewKey || abs(eul(3) ) > angleDiffNewKey
         
-        %% add keyframe
+        % add keyframe
         addRelativePose(pg,[tform.Translation(1:2),-eul(3)],[1 0 0 1 0 1]);
         id = id + 1;
         tform = rigid3d(eul2rotm([0,0,0],'XYZ'),[0,0 ,0]);
@@ -111,16 +117,21 @@ for t = time_start : delta : time_end
         
         % find potential candidates
         loopClosureCandidates = find(diffVec < distForLoopClosure);
+        
+        % sort candidates acc. to their distance to current pose
         [~,I] = sort(diffVec(loopClosureCandidates));
         loopClosureCandidates = loopClosureCandidates(I);
         
+        % init number of approved loop closures with zero
         numLC = 0;
         
+        % if there are no candidates skip
         if isempty(loopClosureCandidates) == 0
             
-            % go through candidates
+            % display the number of candidates
             disp([num2str(numel(loopClosureCandidates)), ' loop closure candidate']);
             
+            % go through candidates
             for k = 1 : numel(loopClosureCandidates)
                 
                 % dont compare with current scan and scan before
@@ -153,7 +164,7 @@ for t = time_start : delta : time_end
                 if numLC >= maxNumLoopClosureEdgesPerNode
                     break;
                 end
-
+                
             end
             
             % optimize
@@ -163,7 +174,7 @@ for t = time_start : delta : time_end
         
     end
     
-    % plot
+    % plot current pose graph
     show(pg);
     axis([-4,8,-4,8]);
     pause(0.01);
