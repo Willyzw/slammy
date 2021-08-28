@@ -125,7 +125,10 @@ as can be seen in `configs/voxblox/transformer.h` and `configs/voxblox/transform
 
 ## How to run SuperPoint & SuperGlue
 - A hands-on notebook is ready to demostrate how the SuperPoint and SuperGlue is performed using the pre-trained model. 
-- SuperPoint \
+- Notebook for SuperPoint: `SuperPoint\superpoint_handson.ipynb` \
 <img src="https://github.com/Willyzw/SuperPointPretrainedNetwork/blob/master/superpoint-demo.gif?raw=true" alt="superpoint.gif" width="750"/> </br>
-- SuperGlue \
+- Notebook for SuperGlue: `SuperGlue\superglue_handson.ipynb` \
 <img src="https://github.com/Willyzw/SuperGluePretrainedNetwork/blob/master/superglue-demo.gif?raw=true" alt="superglue.gif" width="500"/> </br>
+- Video shows SuperPoint run on slammy dataset can be found https://www.youtube.com/watch?v=HWGL0IcTkmQ
+- Please refer to script `SuperPoint/extract.py` on how to extract superpoint features for a sequence of images and dump the
+results as .mat files

@@ -50,6 +50,10 @@ Raw Stereo: <br>
 Orb slam: <br>
 <img src="Vision/assets/slammy_zeb_orb_two_loops.gif" alt="slammy_zeb_orb_two_loops.gif"  /> </br>
 
+SuperPoint: <br>
+<img src="Vision/assets/0164.png" alt="superpoint"  /> </br>
+
+
 ## Ground truth
 More details see [Readme.md](Groundtruth/README.md)
 
