@@ -53,9 +53,11 @@
 % Create an <docid:matlab_ref#butueui-1 |imageDatastore|> object to inspect 
 % the RGB images.
 
-%imageFolder   = ['D:\Datasets\rikirobot\2021-06-25-16-57-50_first_loop_joint_test_camera\left'];
-imageFolder    = ['D:\Datasets\rikirobot\2021-07-16-15-30-46_two_loops_camera\left'];
-imageFolder     = ['\\ifpserv\H-Platte\Vorlesungen\master-SLAM\data\2021-07-16-15-30-46_two_loops_camera\left'];
+rootPath       = 'D:\Datasets\slammy\2021-07-16-15-30-46_two_loops_camera';
+% rootPath       = 'D:\Datasets\slammy\2021-06-25-16-57-50_first_loop_joint_test_camera';
+% rootPath       = '\\ifpserv\H-Platte\Vorlesungen\master-SLAM\data\2021-07-16-15-30-46_two_loops_camera';
+imageFolder    = [rootPath + "\left"];
+superPointFolder = rootPath + "\superpoint_result\left";
 
 imds          = imageDatastore(imageFolder);
 
@@ -106,7 +108,8 @@ intrinsics     = cameraIntrinsics(focalLength, principalPoint, imageSize);
 % Detect and extract ORB features
 scaleFactor = 1.2;
 numLevels   = 8;
-[preFeatures, prePoints] = helperDetectAndExtractFeatures(currI, scaleFactor, numLevels); 
+%[preFeatures, prePoints] = helperDetectAndExtractFeatures(currI, scaleFactor, numLevels); 
+[preFeatures, prePoints] = helperLoadSuperPointFeatures(superPointFolder, imds, currFrameIdx);
 
 currFrameIdx = currFrameIdx + 1;
 firstI       = currI; % Preserve the first frame 
@@ -117,17 +120,15 @@ isMapInitialized  = false;
 while ~isMapInitialized && currFrameIdx < numel(imds.Files)
     currI = readimage(imds, currFrameIdx);
 
-    [currFeatures, currPoints] = helperDetectAndExtractFeatures(currI, scaleFactor, numLevels); 
-    
+    %[currFeatures, currPoints] = helperDetectAndExtractFeatures(currI, scaleFactor, numLevels); 
+    [currFeatures, currPoints] = helperLoadSuperPointFeatures(superPointFolder, imds, currFrameIdx);
+
     currFrameIdx = currFrameIdx + 1;
     
     % Find putative feature matches
     indexPairs = matchFeatures(preFeatures, currFeatures, 'Unique', true, ...
         'MaxRatio', 0.9, 'MatchThreshold', 40);
     
-    preMatchedPoints  = prePoints(indexPairs(:,1),:);
-    currMatchedPoints = currPoints(indexPairs(:,2),:);
-
     % If not enough matches are found, check the next frame
     minMatches = 100;
     if size(indexPairs, 1) < minMatches
@@ -156,10 +157,10 @@ while ~isMapInitialized && currFrameIdx < numel(imds.Files)
 
     % Computes the camera location up to scale. Use half of the 
     % points to reduce computation
-    inlierPrePoints  = preMatchedPoints(inlierTformIdx);
-    inlierCurrPoints = currMatchedPoints(inlierTformIdx);
+    inlierPrePoints  = preMatchedPoints(inlierTformIdx,:);
+    inlierCurrPoints = currMatchedPoints(inlierTformIdx,:);
     [relOrient, relLoc, validFraction] = relativeCameraPose(tform, intrinsics, ...
-        inlierPrePoints(1:2:end), inlierCurrPoints(1:2:end));
+        inlierPrePoints(1:2:end,:), inlierCurrPoints(1:2:end,:));
     
     % If not enough inliers are found, move to the next frame
     if validFraction < 0.9 || numel(size(relOrient))==3
@@ -187,8 +188,8 @@ end % End of map initialization loop
 if isMapInitialized
     close(himage.Parent.Parent); % Close the previous figure
     % Show matched features
-    hfeature = showMatchedFeatures(firstI, currI, prePoints(indexPairs(:,1)), ...
-        currPoints(indexPairs(:, 2)), 'Montage');
+    hfeature = showMatchedFeatures(firstI, currI, prePoints(indexPairs(:,1),:), ...
+        currPoints(indexPairs(:, 2),:), 'Montage');
 else
     error('Unable to initialize map.')
 end
@@ -227,12 +228,12 @@ directionAndDepth = helperViewDirectionAndDepth(size(xyzWorldPoints, 1));
 % key frame at the origin, oriented along the Z-axis
 preViewId     = 1;
 vSetKeyFrames = addView(vSetKeyFrames, preViewId, rigid3d, 'Points', prePoints,...
-    'Features', preFeatures.Features);
+    'Features', preFeatures);
 
 % Add the second key frame
 currViewId    = 2;
 vSetKeyFrames = addView(vSetKeyFrames, currViewId, relPose, 'Points', currPoints,...
-    'Features', currFeatures.Features);
+    'Features', currFeatures);
 
 % Add connection between the first and the second key frame
 vSetKeyFrames = addConnection(vSetKeyFrames, preViewId, currViewId, relPose, 'Matches', indexPairs);
@@ -241,10 +242,10 @@ vSetKeyFrames = addConnection(vSetKeyFrames, preViewId, currViewId, relPose, 'Ma
 [mapPointSet, newPointIdx] = addWorldPoints(mapPointSet, xyzWorldPoints);
 
 % Add observations of the map points
-preLocations  = prePoints.Location;
-currLocations = currPoints.Location;
-preScales     = prePoints.Scale;
-currScales    = currPoints.Scale;
+% preLocations  = prePoints.Location;
+% currLocations = currPoints.Location;
+% preScales     = prePoints.Scale;
+% currScales    = currPoints.Scale;
 
 % Add image points corresponding to the map points in the first key frame
 mapPointSet   = addCorrespondences(mapPointSet, preViewId, newPointIdx, indexPairs(:,1));
@@ -288,7 +289,7 @@ directionAndDepth = update(directionAndDepth, mapPointSet, vSetKeyFrames.Views, 
 
 % Visualize matched features in the current frame
 close(hfeature.Parent.Parent);
-featurePlot   = helperVisualizeMatchedFeatures(currI, currPoints(indexPairs(:,2)));
+featurePlot   = helperVisualizeMatchedFeatures(currI, currPoints(indexPairs(:,2),:));
 
 % Visualize initial map points and camera trajectory
 mapPlot       = helperVisualizeMotionAndStructure(vSetKeyFrames, mapPointSet);
@@ -343,15 +344,19 @@ isLoopClosed     = false;
 while ~isLoopClosed && currFrameIdx < numel(imds.Files)
     currI = readimage(imds, currFrameIdx);
 
-    [currFeatures, currPoints] = helperDetectAndExtractFeatures(currI, scaleFactor, numLevels);
+    %[currFeatures, currPoints] = helperDetectAndExtractFeatures(currI, scaleFactor, numLevels);
+    [currFeatures, currPoints] = helperLoadSuperPointFeatures(superPointFolder, imds, currFrameIdx);
 
     % Track the last key frame
     % mapPointsIdx:   Indices of the map points observed in the current frame
     % featureIdx:     Indices of the corresponding feature points in the 
     %                 current frame
+    disp(['Processing frame ', num2str(currFrameIdx), ' with ', num2str(size(currPoints,1)),...
+          ' features and ', num2str(mapPointSet.Count), ' map points'])
     [currPose, mapPointsIdx, featureIdx] = helperTrackLastKeyFrame(mapPointSet, ...
         vSetKeyFrames.Views, currFeatures, currPoints, lastKeyFrameId, intrinsics, scaleFactor);
-    
+    disp(['- last keyframe matched ', num2str(size(featureIdx,1)), ' features'])
+
     % Track the local map
     % refKeyFrameId:      ViewId of the reference key frame that has the most 
     %                     co-visible map points with the current frame
@@ -359,7 +364,8 @@ while ~isLoopClosed && currFrameIdx < numel(imds.Files)
     [refKeyFrameId, localKeyFrameIds, currPose, mapPointsIdx, featureIdx] = ...
         helperTrackLocalMap(mapPointSet, directionAndDepth, vSetKeyFrames, mapPointsIdx, ...
         featureIdx, currPose, currFeatures, currPoints, intrinsics, scaleFactor, numLevels);
-    
+    disp(['- local map matched ', num2str(size(featureIdx,1)), ' features'])
+
     % Check if the current frame is a key frame. 
     % A frame is a key frame if both of the following conditions are satisfied:
     %
@@ -371,7 +377,7 @@ while ~isLoopClosed && currFrameIdx < numel(imds.Files)
         currFrameIdx, mapPointsIdx);
     
     % Visualize matched features
-    updatePlot(featurePlot, currI, currPoints(featureIdx));
+    updatePlot(featurePlot, currI, currPoints(featureIdx,:));
     
     if ~isKeyFrame
         currFrameIdx = currFrameIdx + 1;
@@ -380,20 +386,21 @@ while ~isLoopClosed && currFrameIdx < numel(imds.Files)
     
     % Update current key frame ID
     currKeyFrameId  = currKeyFrameId + 1;
-%% Local Mapping
-% Local mapping is performed for every key frame. When a new key frame is determined, 
-% add it to the key frames and update the attributes of the map points observed 
-% by the new key frame. To ensure that |mapPointSet| contains as few outliers 
-% as possible, a valid map point must be observed in at least 3 key frames. 
-% 
-% New map points are created by triangulating ORB feature points in the current 
-% key frame and its connected key frames. For each unmatched feature point in 
-% the current key frame, search for a match with other unmatched points in the 
-% connected key frames using <docid:vision_ref#bsvbhh1-1 |matchFeatures|>. The 
-% local bundle adjustment refines the pose of the current key frame, the poses 
-% of connected key frames, and all the map points observed in these key frames.
+    %% Local Mapping
+    % Local mapping is performed for every key frame. When a new key frame is determined, 
+    % add it to the key frames and update the attributes of the map points observed 
+    % by the new key frame. To ensure that |mapPointSet| contains as few outliers 
+    % as possible, a valid map point must be observed in at least 3 key frames. 
+    % 
+    % New map points are created by triangulating ORB feature points in the current 
+    % key frame and its connected key frames. For each unmatched feature point in 
+    % the current key frame, search for a match with other unmatched points in the 
+    % connected key frames using <docid:vision_ref#bsvbhh1-1 |matchFeatures|>. The 
+    % local bundle adjustment refines the pose of the current key frame, the poses 
+    % of connected key frames, and all the map points observed in these key frames.
 
     % Add the new key frame 
+    disp(['- add frame ', num2str(currFrameIdx), ' as keyframe with ID ', num2str(currKeyFrameId)])
     [mapPointSet, vSetKeyFrames] = helperAddNewKeyFrame(mapPointSet, vSetKeyFrames, ...
         currPose, currFeatures, currPoints, mapPointsIdx, featureIdx, localKeyFrameIds);
     
@@ -613,13 +620,13 @@ function [H, score, inliersIndex] = helperComputeHomography(matchedPoints1, matc
     matchedPoints1, matchedPoints2, 'projective', ...
     'MaxNumTrials', 1e3, 'MaxDistance', 4, 'Confidence', 90);
 
-inlierPoints1 = matchedPoints1(inliersLogicalIndex);
-inlierPoints2 = matchedPoints2(inliersLogicalIndex);
+inlierPoints1 = matchedPoints1(inliersLogicalIndex,:);
+inlierPoints2 = matchedPoints2(inliersLogicalIndex,:);
 
 inliersIndex  = find(inliersLogicalIndex);
 
-locations1 = inlierPoints1.Location;
-locations2 = inlierPoints2.Location;
+locations1 = inlierPoints1;
+locations2 = inlierPoints2;
 xy1In2     = transformPointsForward(H, locations1);
 xy2In1     = transformPointsInverse(H, locations2);
 error1in2  = sum((locations2 - xy1In2).^2, 2);
@@ -639,13 +646,13 @@ function [F, score, inliersIndex] = helperComputeFundamentalMatrix(matchedPoints
     matchedPoints1, matchedPoints2, 'Method','RANSAC',...
     'NumTrials', 1e3, 'DistanceThreshold', 0.01);
 
-inlierPoints1 = matchedPoints1(inliersLogicalIndex);
-inlierPoints2 = matchedPoints2(inliersLogicalIndex);
+inlierPoints1 = matchedPoints1(inliersLogicalIndex,:);
+inlierPoints2 = matchedPoints2(inliersLogicalIndex,:);
 
 inliersIndex  = find(inliersLogicalIndex);
 
-locations1    = inlierPoints1.Location;
-locations2    = inlierPoints2.Location;
+locations1    = inlierPoints1;
+locations2    = inlierPoints2;
 
 % Distance from points to epipolar line
 lineIn1   = epipolarLine(F', locations2);
@@ -701,13 +708,15 @@ numPointsRefKeyFrame = numel(findWorldPointsInView(mapPoints, refKeyFrameId));
 tooManyNonKeyFrames = currFrameIndex > lastKeyFrameIndex + 20;
 
 % Track less than 100 map points
-tooFewMapPoints     = numel(mapPointsIndices) < 100;
+tooFewMapPoints     = numel(mapPointsIndices) < 50;
 
 % Tracked map points are fewer than 90% of points tracked by
 % the reference key frame
 tooFewTrackedPoints = numel(mapPointsIndices) < 0.9 * numPointsRefKeyFrame;
 
 isKeyFrame = (tooManyNonKeyFrames || tooFewMapPoints) && tooFewTrackedPoints;
+disp(['- if keyframe tooManyNonKeyFrames:', num2str(tooManyNonKeyFrames), ' tooFewMapPoints:', num2str(tooFewMapPoints)...
+      ' tooFewTrackedPoints:', num2str(tooFewTrackedPoints)])
 end
 %% 
 % |*helperCullRecentMapPoints*| cull recently added map points.
@@ -755,6 +764,16 @@ for i = 1: mapPointSet.Count
     positionsNew(i, :) = positionsOld(i, :) * tform(1:3,1:3) + tform(4, 1:3);
 end
 mapPointSet = updateWorldPoints(mapPointSet, indices, positionsNew);
+end
+%% 
+% helperLoadSuperPointFeatures
+
+function [features, points] = helperLoadSuperPointFeatures(superPointFolder, imds, frameIdx)
+[~, frameTime, ~] = fileparts(string(imds.Files(frameIdx)));
+superPoint = load(superPointFolder + '/mats/' + frameTime + '.mat');
+features = superPoint.desc';
+points = superPoint.pts';
+points = points(:,1:2);
 end
 %% *Reference*
 % [1] Mur-Artal, Raul, Jose Maria Martinez Montiel, and Juan D. Tardos. "ORB-SLAM: 

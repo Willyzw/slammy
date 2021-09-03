@@ -45,7 +45,7 @@ mapPointIdx  = unique(vertcat(mapPointIdx{:}));
 numPoints    = numel(mapPointIdx);
 tracks       = repmat(pointTrack(0,[0 0]),1, numPoints);
 [viewIdsAll, featureIdxAll] = findViewsOfWorldPoint(mapPoints, mapPointIdx);
-locations    = cellfun(@(x) x.Location, vSetKeyFrames.Views.Points, 'UniformOutput', false);
+locations    = cellfun(@(x) x, vSetKeyFrames.Views.Points, 'UniformOutput', false);
 for k = 1:numPoints  
     % Use intersect to get the correct ViewIds in the tracks as the
     % connections in vSetKeyFrames are not updated during map point culling

@@ -87,8 +87,8 @@ classdef helperViewDirectionAndDepth
             % Extract the columns for faster query
             viewsLocations= vertcat(views.AbsolutePose.Translation);
             viewsFeatures = views.Features;
-            viewsPoints   = views.Points;
-            viewsScales   = cellfun(@(x) x.Scale, viewsPoints, 'UniformOutput', false);
+%             viewsPoints   = views.Points;
+%             viewsScales   = cellfun(@(x) x.Scale, viewsPoints, 'UniformOutput', false);
             
             [keyFrameIds, allFeatureIdx] = findViewsOfWorldPoint(mapPointSet, mapPointsIndices);
             
@@ -100,16 +100,16 @@ classdef helperViewDirectionAndDepth
                 numCameras    = numel(keyFrameIdsOfPoint);
                 
                 % Update mean viewing direction
-                allFeatures   = zeros(numCameras, 32, 'uint32');
-                allScales     = zeros(numCameras, 1);
+                allFeatures   = zeros(numCameras, 256);
+%                 allScales     = zeros(numCameras, 1);
                 
                 for k = 1:numCameras
                     tempId            = keyFrameIdsOfPoint(k);
                     features          = viewsFeatures{tempId};
-                    scales            = viewsScales{tempId};
+%                     scales            = viewsScales{tempId};
                     featureIndex      = featureIdxOfPoints(k);
                     allFeatures(k, :) = features(featureIndex, :);
-                    allScales(k)      = scales(featureIndex);
+%                     allScales(k)      = scales(featureIndex);
                 end
                 
                 directionVec = mapPointSet.WorldPoints(pointIdx,:) - viewsLocations(keyFrameIdsOfPoint,:);
@@ -127,16 +127,16 @@ classdef helperViewDirectionAndDepth
                     this.MajorViewId(pointIdx)       = keyFrameIdsOfPoint(distIndex);
                     this.MajorFeatureIndex(pointIdx) = featureIdxOfPoints(distIndex);
                 else
-                    majorViewId = this.MajorViewId(pointIdx);
-                    distIndex   = find(keyFrameIdsOfPoint == majorViewId);
+%                     majorViewId = this.MajorViewId(pointIdx);
+%                     distIndex   = find(keyFrameIdsOfPoint == majorViewId);
                 end
                 
                 % Update depth range
-                distDirectionVec = directionVec(distIndex,:);
-                distKeyFrameId   = keyFrameIdsOfPoint(distIndex);
-                maxDist          = norm(distDirectionVec)* allScales(distIndex);
+                %distDirectionVec = directionVec(distIndex,:);
+                %distKeyFrameId   = keyFrameIdsOfPoint(distIndex);
+                maxDist          = 1; %norm(distDirectionVec)* allScales(distIndex);
                 
-                minDist          = maxDist/max(viewsScales{distKeyFrameId});
+                minDist          = 1; %maxDist/max(viewsScales{distKeyFrameId});
                 
                 this.MaxDistance(pointIdx, 1) = maxDist;
                 this.MinDistance(pointIdx, 1) = minDist;
@@ -153,8 +153,9 @@ function index = computeDistinctiveDescriptors(features)
 if size(features, 1) < 3
     index       = size(features, 1);
 else
-    scores      = helperHammingDistance(features, features);
-    [~, index]  = min(sum(scores, 2));
+%     scores      = helperHammingDistance(features, features);
+%     [~, index]  = min(sum(scores, 2));
+    index       = size(features, 1);
 end
 end
 

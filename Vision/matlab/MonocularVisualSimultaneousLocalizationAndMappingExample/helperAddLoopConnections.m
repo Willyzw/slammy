@@ -13,8 +13,8 @@ function [isLoopClosed, mapPoints, vSetKeyFrames] = helperAddLoopConnections(...
 numCandidates   = size(loopCandidates,1);
 loopConnections = [];
 [index3d1, index2d1] = findWorldPointsInView(mapPoints, currKeyFrameId);
-validFeatures1  = currFeatures.Features(index2d1, :);
-validPoints1    = currPoints(index2d1).Location;
+validFeatures1  = currFeatures(index2d1, :);
+% validPoints1    = currPoints(index2d1).Location;
 
 for k = 1 : numCandidates
     [index3d2, index2d2] = findWorldPointsInView(mapPoints, loopCandidates(k));
@@ -23,7 +23,7 @@ for k = 1 : numCandidates
     allPoints2     = vSetKeyFrames.Views.Points{loopCandidates(k)};
     validPoints2   = allPoints2(index2d2);
     
-    indexPairs = matchFeatures(binaryFeatures(validFeatures1), binaryFeatures(validFeatures2), ...
+    indexPairs = matchFeatures(validFeatures1, validFeatures2, ...
         'Unique', true, 'MaxRatio', 0.9, 'MatchThreshold', 40);
     
     % Check if all the candidate key frames have strong connection with the

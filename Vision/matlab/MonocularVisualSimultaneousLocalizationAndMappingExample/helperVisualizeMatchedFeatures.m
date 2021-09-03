@@ -15,7 +15,7 @@ classdef helperVisualizeMatchedFeatures < handle
     methods (Access = public)
         
         function obj = helperVisualizeMatchedFeatures(I, featurePoints)
-            locations= featurePoints.Location;
+            locations= featurePoints;
             
             % Plot image
             hFig  = figure;
@@ -31,13 +31,14 @@ classdef helperVisualizeMatchedFeatures < handle
             hold(hAxes, 'on');
             
             % Plot features
-            plot(featurePoints, hAxes, 'ShowOrientation',false, ...
-                'ShowScale',false);
+            plot(hAxes, locations(:,1), locations(:,2), 'x');
+%             plot(locations, hAxes, 'ShowOrientation',false, ...
+%                 'ShowScale',false);
             obj.Feature = findobj(hAxes.Parent,'Type','Line'); 
         end 
         
         function updatePlot(obj, I, featurePoints)
-            locations = featurePoints.Location;
+            locations = featurePoints;
             obj.Image.CData   = I;
             obj.Feature.XData = locations(:,1);
             obj.Feature.YData = locations(:,2);

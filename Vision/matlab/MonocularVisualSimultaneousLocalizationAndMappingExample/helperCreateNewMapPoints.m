@@ -16,8 +16,8 @@ KcIDs    = KcViews.ViewId;
 currPose        = vSetKeyFrames.Views.AbsolutePose(currKeyFrameId);
 currFeatures    = vSetKeyFrames.Views.Features{currKeyFrameId};
 currPoints      = vSetKeyFrames.Views.Points{currKeyFrameId};
-currLocations   = currPoints.Location;
-currScales      = currPoints.Scale;
+currLocations   = currPoints;
+% currScales      = currPoints.Scale;
 
 % Camera projection matrix
 [R1, t1]        = cameraPoseToExtrinsics(currPose.Rotation, currPose.Translation);
@@ -41,8 +41,8 @@ for i = 1:numel(KcIDs)
     % Retrieve data of the connected key frame
     kfFeatures  = vSetKeyFrames.Views.Features{KcIDs(i)};
     kfPoints    = vSetKeyFrames.Views.Points{KcIDs(i)};
-    kfLocations = kfPoints.Location;
-    kfScales    = kfPoints.Scale;
+    kfLocations = kfPoints;
+%     kfScales    = kfPoints.Scale;
     
     % currIndex2d changes in each iteration as new map points are created
     [~, currIndex2d] = findWorldPointsInView(mapPoints, currKeyFrameId);
@@ -57,10 +57,10 @@ for i = 1:numel(KcIDs)
     uLocations1 = kfLocations(uIndices1, :);
     uLocations2 = currLocations(uIndices2, :);
     
-    uScales1    = kfScales(uIndices1);
-    uScales2    = currScales(uIndices2);
+%     uScales1    = kfScales(uIndices1);
+%     uScales2    = currScales(uIndices2);
     
-    indexPairs  = matchFeatures(binaryFeatures(uFeatures1), binaryFeatures(uFeatures2),...
+    indexPairs  = matchFeatures(uFeatures1, uFeatures2,...
         'Unique', true, 'MaxRatio', 0.7, 'MatchThreshold', 40);
     
     if isempty(indexPairs) 
@@ -81,8 +81,8 @@ for i = 1:numel(KcIDs)
     epiLine = epipolarLine(F, matchedPoints2);
     distToLine = abs(sum(epiLine.* [matchedPoints1, ones(size(matchedPoints1,1), 1)], 2))./...
         sqrt(sum(epiLine(:,1:2).^2, 2));
-    isValid = distToLine < 2*uScales2(indexPairs(:,2)) & ...
-        distToEpipole > 10*uScales2(indexPairs(:,2));
+    isValid = distToLine < 2 & ...
+        distToEpipole > 10;
     
     indexPairs = indexPairs(isValid, :);
     matchedPoints1 = matchedPoints1(isValid, :);
@@ -105,7 +105,7 @@ for i = 1:numel(KcIDs)
 
     % Filtering by view direction and reprojection error
     inlier = filterTriangulatedMapPoints(xyzPoints, kfPose, currPose, ...
-        uScales1(indexPairs(:,1)), uScales2(indexPairs(:,2)), ...
+        1, 1, ...
         reprojectionErrors, scaleFactor, validIdx);
 
     % Add new map points and update connections 

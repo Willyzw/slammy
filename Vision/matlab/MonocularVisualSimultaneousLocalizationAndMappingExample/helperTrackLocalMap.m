@@ -39,38 +39,37 @@ function [refKeyFrameId, localKeyFrameIds, currPose, mapPointIdx, featureIdx] = 
 newMapPointIdx = setdiff(localPointsIndices, mapPointIdx, 'stable');
 localMapPoints = mapPoints.WorldPoints(newMapPointIdx, :);
 localFeatures  = getFeatures(directionAndDepth, vSetKeyFrames.Views, newMapPointIdx); 
-[projectedPoints, inlierIndex, predictedScales, viewAngles] = removeOutlierMapPoints(mapPoints, ...
+[projectedPoints, inlierIndex, viewAngles] = removeOutlierMapPoints(mapPoints, ...
     directionAndDepth, currPose, intrinsics, newMapPointIdx, scaleFactor, numLevels);
 
 newMapPointIdx = newMapPointIdx(inlierIndex);
 localMapPoints = localMapPoints(inlierIndex,:);
 localFeatures  = localFeatures(inlierIndex,:);
 
-unmatchedfeatureIdx = setdiff(cast((1:size( currFeatures.Features, 1)).', 'uint32'), ...
+unmatchedfeatureIdx = setdiff(cast((1:size( currFeatures, 1)).', 'uint32'), ...
     featureIdx,'stable');
-unmatchedFeatures   = currFeatures.Features(unmatchedfeatureIdx, :);
-unmatchedValidPoints= currPoints(unmatchedfeatureIdx);
+unmatchedFeatures   = currFeatures(unmatchedfeatureIdx, :);
+unmatchedValidPoints= currPoints(unmatchedfeatureIdx,1:2);
 
 % Search radius depends on scale and view direction
 searchRadius    = 4*ones(size(localFeatures, 1), 1);
 searchRadius(viewAngles<3) = 2.5;
-searchRadius    = searchRadius.*predictedScales;
 
-indexPairs = matchFeaturesInRadius(binaryFeatures(localFeatures),...
-    binaryFeatures(unmatchedFeatures), unmatchedValidPoints, projectedPoints, ...
-    searchRadius, 'MatchThreshold', 40, 'MaxRatio', 0.9, 'Unique', true);
+indexPairs = matchFeaturesInRadius(localFeatures,...
+    unmatchedFeatures, unmatchedValidPoints, projectedPoints, ...
+    searchRadius, 'MatchThreshold', 80, 'MaxRatio', 0.9, 'Unique', true);
 
 % Filter by scales
-isGoodScale = currPoints.Scale(indexPairs(:, 2)) >= ...
-    max(1, predictedScales(indexPairs(:, 1))/scaleFactor) & ...
-    currPoints.Scale(indexPairs(:, 2)) <= predictedScales(indexPairs(:, 1));
-indexPairs  = indexPairs(isGoodScale, :);
+% isGoodScale = currPoints.Scale(indexPairs(:, 2)) >= ...
+%     max(1, predictedScales(indexPairs(:, 1))/scaleFactor) & ...
+%     currPoints.Scale(indexPairs(:, 2)) <= predictedScales(indexPairs(:, 1));
+% indexPairs  = indexPairs(isGoodScale, :);
 
 % Refine camera pose with more 3D-to-2D correspondences
 mapPointIdx   = [newMapPointIdx(indexPairs(:,1)); mapPointIdx];
 featureIdx     = [unmatchedfeatureIdx(indexPairs(:,2)); featureIdx];
 matchedMapPoints   = mapPoints.WorldPoints(mapPointIdx,:);
-matchedImagePoints = currPoints.Location(featureIdx,:);
+matchedImagePoints = currPoints(featureIdx,1:2);
 
 % Refine camera pose only
 currPose = bundleAdjustmentMotion(matchedMapPoints, matchedImagePoints, ...
@@ -142,7 +141,7 @@ allFeatures = vertcat(viewsFeatures{uIds});
 features    = allFeatures(allIndices, :);
 end
 
-function [projectedPoints, inliers, predictedScales, viewAngles] = removeOutlierMapPoints(...
+function [projectedPoints, inliers, viewAngles] = removeOutlierMapPoints(...
     mapPoints, directionAndDepth, pose, intrinsics, localPointsIndices, scaleFactor, ...
     numLevels)
 
@@ -160,25 +159,18 @@ validByView      = sum(viewDirection.*cameraToPoints, 2) > ...
 
 % 3) Distance from map point to camera center is in the range of scale
 % invariant depth
-minDist          = directionAndDepth.MinDistance(localPointsIndices);
-maxDist          = directionAndDepth.MaxDistance(localPointsIndices);
-dist             = vecnorm(xyzPoints - pose.Translation, 2, 2);
+% minDist          = directionAndDepth.MinDistance(localPointsIndices);
+% maxDist          = directionAndDepth.MaxDistance(localPointsIndices);
+% dist             = vecnorm(xyzPoints - pose.Translation, 2, 2);
+% 
+% validByDistance  = dist > minDist & dist < maxDist;
 
-validByDistance  = dist > minDist & dist < maxDist;
-
-inliers          = isInImage & validByView & validByDistance;
-
-% Predicted scales
-level= ceil(log(maxDist ./ dist)./log(scaleFactor));
-level(level<0)   = 0;
-level(level>=numLevels-1) = numLevels-1;
-predictedScales  = scaleFactor.^level;
+inliers          = isInImage & validByView;
 
 % View angles
 viewAngles       = acosd(sum(cameraNormVector.*cameraToPoints, 2) ./ ...
     vecnorm(cameraToPoints, 2, 2));
 
-predictedScales  = predictedScales(inliers);
 viewAngles       = viewAngles(inliers);
 
 projectedPoints = projectedPoints(inliers, :);

@@ -31,13 +31,13 @@ function [currPose, mapPointIdx, featureIdx] = helperTrackLastKeyFrame(...
 % Match features from the previous key frame with known world locations
 [index3d, index2d]    = findWorldPointsInView(mapPoints, lastKeyFrameId);
 lastKeyFrameFeatures  = views.Features{lastKeyFrameId}(index2d,:);
-lastKeyFramePoints    = views.Points{lastKeyFrameId}(index2d);
+% lastKeyFramePoints    = views.Points{lastKeyFrameId}(index2d,:);
 
-indexPairs  = matchFeatures(currFeatures, binaryFeatures(lastKeyFrameFeatures),...
-    'Unique', true, 'MaxRatio', 0.9, 'MatchThreshold', 40);
+indexPairs  = matchFeatures(currFeatures, lastKeyFrameFeatures,...
+    'Unique', true, 'MaxRatio', 0.9, 'MatchThreshold', 80);
 
 % Estimate the camera pose
-matchedImagePoints = currPoints.Location(indexPairs(:,1),:);
+matchedImagePoints = currPoints(indexPairs(:,1),:);
 matchedWorldPoints = mapPoints.WorldPoints(index3d(indexPairs(:,2)), :);
 
 matchedImagePoints = cast(matchedImagePoints, 'like', matchedWorldPoints);
@@ -68,16 +68,16 @@ xyzPoints = mapPoints.WorldPoints(index3d,:);
 [projectedPoints, isInImage] = worldToImage(intrinsics, R, t, xyzPoints);
 projectedPoints = projectedPoints(isInImage, :);
 
-minScales    = max(1, lastKeyFramePoints.Scale(isInImage)/scaleFactor);
-maxScales    = lastKeyFramePoints.Scale(isInImage)*scaleFactor;
+% minScales    = max(1, lastKeyFramePoints.Scale(isInImage)/scaleFactor);
+% maxScales    = lastKeyFramePoints.Scale(isInImage)*scaleFactor;
 r            = 4;
-searchRadius = r*lastKeyFramePoints.Scale(isInImage);
+searchRadius = r;
 
-indexPairs   = matchFeaturesInRadius(binaryFeatures(lastKeyFrameFeatures(isInImage,:)), ...
-    binaryFeatures(currFeatures.Features), currPoints, projectedPoints, searchRadius, ...
-    'MatchThreshold', 40, 'MaxRatio', 0.8, 'Unique', true);
+indexPairs   = matchFeaturesInRadius(lastKeyFrameFeatures(isInImage,:), ...
+    currFeatures, currPoints, projectedPoints, searchRadius, ...
+    'MatchThreshold', 80, 'MaxRatio', 0.8, 'Unique', true);
 
-if size(indexPairs, 1) < 20
+if size(indexPairs, 1) < 5
     currPose=[];
     mapPointIdx=[];
     featureIdx=[];
@@ -85,9 +85,9 @@ if size(indexPairs, 1) < 20
 end
 
 % Filter by scales
-isGoodScale = currPoints.Scale(indexPairs(:, 2)) >= minScales(indexPairs(:, 1)) & ...
-    currPoints.Scale(indexPairs(:, 2)) <= maxScales(indexPairs(:, 1));
-indexPairs  = indexPairs(isGoodScale, :);
+% isGoodScale = currPoints.Scale(indexPairs(:, 2)) >= minScales(indexPairs(:, 1)) & ...
+%     currPoints.Scale(indexPairs(:, 2)) <= maxScales(indexPairs(:, 1));
+% indexPairs  = indexPairs(isGoodScale, :);
 
 % Obtain the index of matched map points and features
 tempIdx            = find(isInImage); % Convert to linear index
@@ -96,7 +96,7 @@ featureIdx         = indexPairs(:,2);
 
 % Refine the camera pose again
 matchedWorldPoints = mapPoints.WorldPoints(mapPointIdx, :);
-matchedImagePoints = currPoints.Location(featureIdx, :);
+matchedImagePoints = currPoints(featureIdx, :);
 
 currPose = bundleAdjustmentMotion(matchedWorldPoints, matchedImagePoints, ...
     currPose, intrinsics, 'PointsUndistorted', true, 'AbsoluteTolerance', 1e-7,...
