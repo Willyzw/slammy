@@ -1,4 +1,4 @@
-## Demo videos
+# Demo videos
 - ORB-SLAM3: feature based (indirect) method for simultaneous mapping and localization, thanks to the loop closure and global pose optimisation (Bundle Adjustment) it can keep the two loops aligned together [YouTube Link](https://www.youtube.com/watch?v=22eoGMiPCzw) </br>
 <img src="assets/2021-07-16-orb-slam.gif" alt="slammy_zed_two_loops.gif" width="500"/> </br>
 - Stereo Direct Sparse Odometry (Stereo-DSO): photometric based direct method, although no loop closure and global optimisation - strictly speaking an odometry method - it still produces a reasonable result while much denser map compared with ORB-SLAM result [YouTube Link](https://www.youtube.com/watch?v=4iUn-hC-BH4) </br>
@@ -9,7 +9,12 @@
 <img src="assets/2021-07-16-dense-mapping.gif" alt="slammy_zed_two_loops.gif" width="500"/> </br>
 
 
-## How to set up Jetson NX board
+# Trajectory estimation results compared to GT
+The trajectories estimated by different methods are evaluated against groundtruth, which is carried out in [matlab script](../Rikirobot\Matlab\example_compare_trajectories\main.m) \
+<img src="results/example_compare_trajectories_vision.jpg" alt="results/example_compare_trajectories_vision.jpg"/> </br>
+
+
+# How to set up Jetson NX board
 - Flash SD card & first boot configuration e.g. create account
   - Follow https://developer.nvidia.com/embedded/learn/get-started-jetson-xavier-nx-devkit
   - User: `jetson`; PW: `jetson`
@@ -25,7 +30,7 @@
   - remember to add `source /opt/ros/melodic/setup.sh` to ~/.bashrc and ~/.zshrc depending on which shell you prefer to use
 
 
-## How to install Zed2 camera driver and its toolbox
+# How to install Zed2 camera driver and its toolbox
 - Install ZED SDK
   - Follow https://www.stereolabs.com/developers/release/
   - Note: `sudo apt update` is needed before executing the install script
@@ -42,7 +47,7 @@
   - Command `roslaunch zed_display display_zed2.launch`
 
 
-## How to record rosbag file
+# How to record rosbag file
 - Terminal 1: launch the zed2 driver with `roslaunch zed_wrapper zed2.launch`
 - Terminal 2: start the recording with `sudo ./data/record.sh`(sudo for correcting the system date)
 - The rosbag and the two image sequences of the stereo cameras from the "two_loops" run can be downloaded from here: \
@@ -51,13 +56,13 @@
 <img src="assets/ros_topic_list.png" alt="ros_topic_list" width="500"/>
 
 
-## How to visualize pointcloud from depth map
+# How to visualize pointcloud from depth map
 - The depth map with topic name `/zed2/zed_node/depth/depth_registered` and topic type `sensor_msgs/Image` are ready to be visualized as 3D point cloud using the built-in Rviz display plug-in `DepthCloud`
 - To let the plug-in find the right message, it is required to set the field `Depth Map Topic` and `Color Image Topic`, an example rviz config can be found [here](configs\depth_map_zed2.rviz)
 - Additionally the depth map is accompanied by confidence map which can be also visualized using image display plug-in
 - More info see [DepthCloud](https://www.stereolabs.com/docs/ros/depth-sensing/#depth-cloud)
 
-## How to run ORB-SLAM3
+# How to run ORB-SLAM3
 - Configure ORB-slam3
   - Link: `https://github.com/UZ-SLAMLab/ORB_SLAM3.git`
   - Clone to `~/Software/projects/ORB_SLAM3`
@@ -83,7 +88,7 @@
     - `rosrun ORB_SLAM3 Mono Vocabulary/ORBvoc.txt Examples/Monocular/Zed2.yaml` (Monocular setting)
     - `rosrun ORB_SLAM3 Stereo Vocabulary/ORBvoc.txt Examples/Stereo/Zed2.yaml 0` (Stereo setting)
 
-## How to run DSO
+# How to run DSO
 - Clone and build DSO project
   - Link: `https://github.com/JakobEngel/dso.git`
   - Clone to `~/Software/projects/dso` and follow the project instruction to build the project
@@ -99,7 +104,7 @@
   - `rosrun dso_ros dso_live image:=/zed2/zed_node/rgb/image_rect_gray calib=/home/jetson/Software/src/dso_ros/zed2.txt mode=1`
 
 
-## How to run Stereo-DSO
+# How to run Stereo-DSO
 - Clone and build Stereo-DSO project
   - Link: `https://github.com/HorizonAD/stereo_dso`
   - Clone to `~/Software/projects/stereo_dso` and follow the project instruction to build the project
@@ -110,20 +115,20 @@
   - Note: it is found the parameter `setting_kfGlobalWeight=1.0f` suited better to our data, so please update it in `stereo_dso_ros.cpp`
 
 
-## How to run volumetric dense mapping with Voxblox
+# How to run volumetric dense mapping with Voxblox
 - As mentioned before, the depth maps produced by Zed2 camera is error-contaminated, thus how to eliminate the noise is a challenging task.
 One de-factor standard method is to use the TSDF-based volumetric representation to fuse the depth maps.
 - Clone `https://github.com/ethz-asl/voxblox` to catkin workspace `~/Software/src/voxblox`
 - Install the dependencies as [instruction](https://voxblox.readthedocs.io/en/latest/pages/Installation.html)
-- Here we use the estimated camera estimated by ORB-SLAM `assets\2021-07-17-15-30-46_orb-slam-est-poses.txt`
+- Here we use the estimated camera estimated by Stereo ORB-SLAM `results\slammy_two_loops_traj_stereo-orb-slam.txt`
 - A customized voxblox config for our data can be found [here](configs\voxblox\zed2.launch)
 - Note that voxblox used to look-up the camera transform from rosbag, to feed the poses by an external file some modifications are needed
 as can be seen in `configs/voxblox/transformer.h` and `configs/voxblox/transformer.cc`
 - After performing the aboved metioned steps, the voxblox program should be ready to run with `roslaunch voxblox_ros zed2.launch`
-- An example mesh output can be found in `assets/2021-07-17-voxblox-mesh.ply`
+- An example mesh output can be found in `results/2021-07-17-voxblox-mesh.ply`
 
 
-## How to run SuperPoint & SuperGlue
+# How to run SuperPoint & SuperGlue
 - A hands-on notebook is ready to demostrate how the SuperPoint and SuperGlue is performed using the pre-trained model. 
 - Notebook for SuperPoint: `SuperPoint\superpoint_handson.ipynb` \
 <img src="https://github.com/Willyzw/SuperPointPretrainedNetwork/blob/master/superpoint-demo.gif?raw=true" alt="superpoint.gif" width="750"/> </br>
