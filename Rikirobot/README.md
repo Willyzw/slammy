@@ -10,7 +10,7 @@ https://ubuntu-mate.org/raspberry-pi/
 
 * raspberry pi 3 - Ubuntu Mate
 * RPLIDAR https://www.slamtec.com/en/Lidar/A1
-* IMU + magnetometer
+* IMU + magnetometer (GY-85) combines: ADXL345 Three axis acceleration, ITG3205 Three axis gyroscope, HMC5883L Three axis magnetic field.
 * 2 Stepper motors with rotary encoder
 * 3S LiPo Battery
 
