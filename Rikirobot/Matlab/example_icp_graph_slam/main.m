@@ -42,11 +42,11 @@ angleDiffNewKey = 10*pi/180;
 translDiffNewKey = 0.3;
 
 % number of loop closure conditions per node
-maxNumLoopClosureEdgesPerNode = 3; % 1 ?
+maxNumLoopClosureEdgesPerNode = 1; % 1 ?
 
 % minimum difference of current node id to potential loop closure candidate
 % nodes
-idDiffToCurrKeyFrameId = 2; % 50 ?
+idDiffToCurrKeyFrameId = 10; % 50 ?
 
 %% init stuff
 PC_new = [];

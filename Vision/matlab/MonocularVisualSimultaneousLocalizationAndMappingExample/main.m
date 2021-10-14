@@ -54,7 +54,7 @@
 % the RGB images.
 
 %imageFolder   = ['D:\Datasets\rikirobot\2021-06-25-16-57-50_first_loop_joint_test_camera\left'];
-imageFolder    = ['D:\Datasets\rikirobot\2021-07-16-15-30-46_two_loops_camera\left'];
+% imageFolder    = ['C:\Users\david\Documents\left'];
 imageFolder     = ['\\ifpserv\H-Platte\Vorlesungen\master-SLAM\data\2021-07-16-15-30-46_two_loops_camera\left'];
 
 imds          = imageDatastore(imageFolder);
@@ -402,8 +402,8 @@ while ~isLoopClosed && currFrameIdx < numel(imds.Files)
         directionAndDepth, mapPointsIdx, newPointIdx);
     
     % Create new map points by triangulation
-    minNumMatches = 20;
-    minParallax   = 3;
+    minNumMatches = 5;
+    minParallax   = 2;
     [mapPointSet, vSetKeyFrames, newPointIdx] = helperCreateNewMapPoints(mapPointSet, vSetKeyFrames, ...
         currKeyFrameId, intrinsics, scaleFactor, minNumMatches, minParallax);
     
