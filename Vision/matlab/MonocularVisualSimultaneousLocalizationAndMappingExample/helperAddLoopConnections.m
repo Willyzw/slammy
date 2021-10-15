@@ -52,7 +52,8 @@ for k = 1 : numCandidates
     
     % Add connection between the current key frame and the loop key frame
     matches = [index2d2(indexPairs(inlierIndex, 2)), index2d1(indexPairs(inlierIndex, 1))];
-    vSetKeyFrames = addConnection(vSetKeyFrames, loopCandidates(k), currKeyFrameId, tform, 'Matches', matches);
+    infoMat = eye(7) * 10;
+    vSetKeyFrames = addConnection(vSetKeyFrames, loopCandidates(k), currKeyFrameId, tform, infoMat, 'Matches', matches);
     disp(['Loop edge added between keyframe: ', num2str(loopCandidates(k)), ' and ', num2str(currKeyFrameId)]);
     
     % Fuse co-visible map points

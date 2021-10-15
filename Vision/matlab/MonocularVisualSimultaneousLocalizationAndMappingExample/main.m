@@ -341,7 +341,8 @@ isLoopClosed     = false;
 % process. Otherwise, start *Tracking* for the next frame.
 
 % Main loop
-while ~isLoopClosed && currFrameIdx < numel(imds.Files)
+num_imds = numel(imds.Files);
+while ~isLoopClosed && currFrameIdx < num_imds
     currI = readimage(imds, currFrameIdx);
 
     %[currFeatures, currPoints] = helperDetectAndExtractFeatures(currI, scaleFactor, numLevels);
@@ -409,8 +410,8 @@ while ~isLoopClosed && currFrameIdx < numel(imds.Files)
         directionAndDepth, mapPointsIdx, newPointIdx);
     
     % Create new map points by triangulation
-    minNumMatches = 20;
-    minParallax   = 3;
+    minNumMatches = 5;
+    minParallax   = 2;
     [mapPointSet, vSetKeyFrames, newPointIdx] = helperCreateNewMapPoints(mapPointSet, vSetKeyFrames, ...
         currKeyFrameId, intrinsics, scaleFactor, minNumMatches, minParallax);
     
@@ -503,12 +504,18 @@ end % End of main loop
 % asscociated scales.
 
 % Optimize the poses
-minNumMatches      = 30;
-[vSetKeyFramesOptim, poseScales] = optimizePoses(vSetKeyFrames, minNumMatches, 'Tolerance', 1e-16);
-
-% Update map points after optimizing the poses
-mapPointSet = helperUpdateGlobalMap(mapPointSet, directionAndDepth, ...
-    vSetKeyFrames, vSetKeyFramesOptim, poseScales);
+minNumMatches      = 20;
+if isLoopClosed
+    [vSetKeyFramesOptim, poseScales] = optimizePoses(vSetKeyFrames, minNumMatches, 'Tolerance', 1e-16);
+    % Update map points after optimizing the poses
+    mapPointSet = helperUpdateGlobalMap(mapPointSet, directionAndDepth, ...
+        vSetKeyFrames, vSetKeyFramesOptim, poseScales);
+else
+    vSetKeyFramesOptim = optimizePoses(vSetKeyFrames, minNumMatches, 'Tolerance', 1e-16);
+    % Update map points after optimizing the poses
+    mapPointSet = helperUpdateGlobalMap(mapPointSet, directionAndDepth, ...
+        vSetKeyFrames, vSetKeyFramesOptim);
+end
 
 updatePlot(mapPlot, vSetKeyFrames, mapPointSet);
 
@@ -526,17 +533,17 @@ showLegend(mapPlot);
 % (RMSE) of trajectory estimates. 
 
 % Load ground truth 
-gTruthData = load('orbslamGroundTruth.mat');
-gTruth     = gTruthData.gTruth;
+% gTruthData = load('orbslamGroundTruth.mat');
+% gTruth     = gTruthData.gTruth;
 
 % Plot the actual camera trajectory 
-plotActualTrajectory(mapPlot, gTruth(addedFramesIdx), optimizedPoses);
+% plotActualTrajectory(mapPlot, gTruth(addedFramesIdx), optimizedPoses);
 
 % Show legend
 showLegend(mapPlot);
 
 % Evaluate tracking accuracy
-helperEstimateTrajectoryError(gTruth(addedFramesIdx), optimizedPoses);
+% helperEstimateTrajectoryError(gTruth(addedFramesIdx), optimizedPoses);
 %% 
 % This concludes an overview of how to build a map of an indoor environment 
 % and estimate the trajectory of the camera using ORB-SLAM.
@@ -759,7 +766,9 @@ indices     = 1:mapPointSet.Count;
 for i = 1: mapPointSet.Count
     majorViewIds = directionAndDepth.MajorViewId(i);
     poseNew = posesNew(majorViewIds).T;
-    poseNew(1:3, 1:3) = poseNew(1:3, 1:3) * poseScales(majorViewIds);
+    if nargin > 4
+        poseNew(1:3, 1:3) = poseNew(1:3, 1:3) * poseScales(majorViewIds);
+    end
     tform = posesOld(majorViewIds).T \ poseNew;
     positionsNew(i, :) = positionsOld(i, :) * tform(1:3,1:3) + tform(4, 1:3);
 end

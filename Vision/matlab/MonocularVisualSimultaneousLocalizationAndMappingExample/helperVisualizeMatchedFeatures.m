@@ -31,7 +31,7 @@ classdef helperVisualizeMatchedFeatures < handle
             hold(hAxes, 'on');
             
             % Plot features
-            plot(hAxes, locations(:,1), locations(:,2), 'x');
+            plot(hAxes, locations(:,1), locations(:,2), 'gx');
 %             plot(locations, hAxes, 'ShowOrientation',false, ...
 %                 'ShowScale',false);
             obj.Feature = findobj(hAxes.Parent,'Type','Line'); 
