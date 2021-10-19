@@ -52,6 +52,23 @@ roslaunch rikirobot bringup.launch &
 # start tele operator (keyboard)
 rosrun teleop_twist_keyboard teleop_twist_keyboard.py &
 ````
+### Use PS4 DualShock Controler as remote
+Only do once: Pair PS4 Controller by pressing share and PS button until light flashes.
+use `bluetoothctl` to pair to controller.
+If connected solid purple light.
+
+
+Install http://wiki.ros.org/ds4_driver
+launch the twist node with 2 degree of freedom:
+
+`roslaunch ds4_driver ds4_twist.launch dof:=2`
+
+If connected solid purple light and:
+`[INFO] [1634658515.208866]: Connected to Bluetooth Controller (98:B6:E9:FE:7A:30 hidraw0)`
+
+Axis and sensitivity can be changed in:
+`/catkin_ws/src/ds4_driver/config/twist_2dof.yaml`
+
 ## connect to master from extern pc (ubuntu)
 
 Set ip to master
