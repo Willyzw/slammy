@@ -20,11 +20,19 @@ function myfun(src,event)
             % fill velMsg
             velMsg.Linear.X=-0.3;
             velMsg.Angular.Z=0.0;
+            case 'downarrow'
+            % fill velMsg
+            velMsg.Linear.X=-0.3;
+            velMsg.Angular.Z=0.0;
             case 'numpad3'
             % fill velMsg
             velMsg.Linear.X=-0.3;
             velMsg.Angular.Z=-0.5;
             case 'numpad4'
+            % fill velMsg
+            velMsg.Linear.X=0.0;
+            velMsg.Angular.Z=0.5;
+            case 'leftarrow'
             % fill velMsg
             velMsg.Linear.X=0.0;
             velMsg.Angular.Z=0.5;
@@ -36,6 +44,10 @@ function myfun(src,event)
             % fill velMsg
             velMsg.Linear.X=0.0;
             velMsg.Angular.Z=-0.5;
+            case 'rightarrow'
+            % fill velMsg
+            velMsg.Linear.X=0.0;
+            velMsg.Angular.Z=-0.5;
             case 'numpad7'
             % fill velMsg
             velMsg.Linear.X=0.3;
@@ -44,6 +56,10 @@ function myfun(src,event)
             % fill velMsg
             velMsg.Linear.X=0.3;
             velMsg.Angular.Z=0.0;
+            case 'arrowup'
+            % fill velMsg
+            velMsg.Linear.X=0.3;
+            velMsg.Angular.Z=0.0;            
             case 'numpad9'
             % fill velMsg
             velMsg.Linear.X=0.3;

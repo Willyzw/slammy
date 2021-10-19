@@ -10,18 +10,16 @@ close all
 
 %% set up node and connect to Master
 rosshutdown
-try
-ipaddress = "http://141.58.125.213:11311";
-rosinit(ipaddress)
-catch
-disp('Ros is running')   
-end
 
+ipaddress = "http://141.58.125.220:11311";
+rosinit(ipaddress)
+
+pause(1)
 %% subscribe publish to topics
 global handles % to be used in @teleop callback
 % laser
 handles.laserSub = rossubscriber("/scan","BufferSize",5);
-receive(handles.laserSub,3);
+receive(handles.laserSub,10);
 % keyboard (teleop)
 handles.velPub = rospublisher("/cmd_vel");
 
@@ -46,7 +44,7 @@ xlim([-3 3])
 pbaspect([1 1 1])
 
 %% initial map
-laserdata=receive(handles.laserSub,3);
+laserdata=receive(handles.laserSub,5);
 rho=laserdata.Ranges;
 theta=[laserdata.AngleMin:laserdata.AngleIncrement:laserdata.AngleMax]';
 theta(rho==inf)=[];
@@ -58,7 +56,7 @@ drawnow
 while true
     
 try % try if new data is available 
-laserdata=receive(handles.laserSub,3);
+laserdata=receive(handles.laserSub,5);
 catch % if no instead of error display time out'
     disp('timed out')
 end
