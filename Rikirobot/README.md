@@ -25,7 +25,7 @@ you might need an ip scanner to find the ip.
 
 If you never connected to your local wifi, use hdmi, mouse and keyboard.
 
-## Set up the Lidar, odometry and tele op
+## Set up the Lidar, odometry and tele op (PS5)
 `sudo ./Desktop/run_riki.sh`
 
 (sudo to set time).
@@ -40,7 +40,7 @@ Content:
 #usual ip 141.58.125.212
 
 #get ntim
-sudo date -s "$(wget -qSO- --max-redirect=0 google.com 2>&1 | grep Date: | cut -d' ' -f5-8)Z"
+#sudo date -s "$(wget -qSO- --max-redirect=0 google.com 2>&1 | grep Date: | cut -d' ' -f5-8)Z"
 
 
 # start lidar
@@ -51,12 +51,17 @@ roslaunch rikirobot bringup.launch &
 
 # start tele operator (keyboard)
 rosrun teleop_twist_keyboard teleop_twist_keyboard.py &
+
+# start tele operator (PS4 Controler)
+roslaunch ds4_driver ds4_twist.launch dof:=2
+
 ````
 ### Use PS4 DualShock Controler as remote
-Only do once: Pair PS4 Controller by pressing share and PS button until light flashes.
-use `bluetoothctl` to pair to controller.
-If connected solid purple light.
+Only do once: Pair PS4 Controller by pressing share and PS button until backlight flashes.
+Use `bluetoothctl` to pair to controller.
+If connected solid purple backllight.
 
+After first pairing the controller will pair automaticly after powerup.
 
 Install http://wiki.ros.org/ds4_driver
 launch the twist node with 2 degree of freedom:
