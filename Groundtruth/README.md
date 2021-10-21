@@ -6,7 +6,7 @@ The ground truth was captured via a GoPro, by tracking an ArUco marker's pose (O
 Video: [assets/slammy_ground_truth_two_loops.avi](assets/slammy_ground_truth_two_loops.avi)
 
 # Calibrated images
-The calibrated images are in [image_seq_linear_rectangle](image_seq_linear_rectangle)
+The calibrated images can be dowloaded from: https://webdav.ifp.uni-stuttgart.de/s/aswTjBa3JtDrffM (810Mb).
 
 <img src="assets/slammy_cam_calibartion_workflow.jpg" alt="slammy_cam_calibartion_workflow" width="900"/>
 
