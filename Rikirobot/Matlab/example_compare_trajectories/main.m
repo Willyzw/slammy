@@ -68,7 +68,7 @@ poses_stereo_dso = load_and_process_trj('../../../Vision/results/slammy_two_loop
 poses_droid_mono = load_and_process_trj('../../../Vision/results/slammy_two_loops_traj_droid_mono.txt', [4,2], poses_gt);
 poses_droid_rgbd = load_and_process_trj('../../../Vision/results/slammy_two_loops_traj_droid_rgbd.txt', [4,2], poses_gt);
 
-% fix unknown scale in mono case
+% Mono SLAM has scale ambiguity, manually found 1.2 a rough estimate 
 poses_droid_mono = poses_droid_mono * 1.2;
 
 % plot
@@ -122,7 +122,7 @@ plot(poses_orb_slam(:,1), poses_orb_slam(:,2),'.-', 'markerSize', 1, 'Color', [0
 plot(poses_stereo_dso(:,1), poses_stereo_dso(:,2),'.-g', 'markerSize', 1)
 plot(poses_droid_mono(:,1), poses_droid_mono(:,2),'.-', 'markerSize', 1,'Color',[0.8500 0.3250 0.0980])
 plot(poses_droid_rgbd(:,1), poses_droid_rgbd(:,2),'.-m', 'markerSize', 1)
-legend('GT','Wheel Odom','Lidar SLAM','Lidar ICP Graph SLAM', 'Stereo ORB-SLAM','Stereo DSO','DROID mono','DROID rgbd','Location','eastoutside')
+legend('GT','Wheel Odom','Lidar SLAM','Lidar ICP Graph SLAM', 'Stereo ORB-SLAM','Stereo DSO','DROID mono*','DROID rgbd','Location','eastoutside')
 axis equal
 axis([-1, 5, -1, 7])
 grid on
