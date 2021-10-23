@@ -89,14 +89,17 @@ poses_droid_mono = poses_droid_mono * 1.2;
 %% Joint figure
 figure('Position', [10 10 1200 600]);
 t = tiledlayout(1,3,'Padding','tight');
+axis_limits = [-0.5, 4.0, -0.5, 6];
 
 nexttile
 plot(poses_gt(:,1),poses_gt(:,2),'.-k')
 hold on
 plot(poses_odometry(:,1),poses_odometry(:,2),'.-b', 'markerSize', 2)
 % legend('GT','Wheel Odometer','Location','eastoutside')
+plot(poses_gt(1,1), poses_gt(1,2), 'b>', 'markerSize', 2, 'LineWidth',3)
+plot(poses_gt(length(poses_gt),1), poses_gt(length(poses_gt),2), 'rv', 'markerSize', 2, 'LineWidth',3)
 axis equal
-axis([-1, 5, -1, 7])
+axis([-1, 4.5, -1, 7])
 grid on
 xlabel('a)','fontsize',14)
 
@@ -106,8 +109,10 @@ hold on
 plot(poses_lidar_slam(:,1),poses_lidar_slam(:,2),'.-r', 'markerSize', 3)
 plot(poses_icp_graph_slam(:,1),poses_icp_graph_slam(:,2),'.-', 'markerSize', 3, 'color', [0.3010 0.7450 0.9330])
 % legend('GT','Lidar SLAM','Lidar ICP Graph SLAM','Location','eastoutside'	)
+plot(poses_gt(1,1), poses_gt(1,2), 'b>', 'markerSize', 2, 'LineWidth',3)
+plot(poses_gt(length(poses_gt),1), poses_gt(length(poses_gt),2), 'rv', 'markerSize', 2, 'LineWidth',3)
 axis equal
-axis([-1, 5, -1, 7])
+axis(axis_limits)
 grid on
 xlabel('b)','fontsize',14)
 
@@ -122,9 +127,12 @@ plot(poses_orb_slam(:,1), poses_orb_slam(:,2),'.-', 'markerSize', 1, 'Color', [0
 plot(poses_stereo_dso(:,1), poses_stereo_dso(:,2),'.-g', 'markerSize', 1)
 plot(poses_droid_mono(:,1), poses_droid_mono(:,2),'.-', 'markerSize', 1,'Color',[0.8500 0.3250 0.0980])
 plot(poses_droid_rgbd(:,1), poses_droid_rgbd(:,2),'.-m', 'markerSize', 1)
-legend('GT','Wheel Odom','Lidar SLAM','Lidar ICP Graph SLAM', 'Stereo ORB-SLAM','Stereo DSO','DROID mono*','DROID rgbd','Location','eastoutside')
+
+plot(poses_gt(1,1), poses_gt(1,2), 'b>', 'markerSize', 2, 'LineWidth',3)
+plot(poses_gt(length(poses_gt),1), poses_gt(length(poses_gt),2), 'rv', 'markerSize', 2, 'LineWidth',3)
+legend('GT','Wheel Odom','Lidar SLAM','Lidar ICP Graph SLAM', 'Stereo ORB-SLAM','Stereo DSO','DROID mono*','DROID rgbd','Start', 'End','Location','eastoutside')
 axis equal
-axis([-1, 5, -1, 7])
+axis(axis_limits)
 grid on
 xlabel('c)','fontsize',14)
 exportgraphics(t, 'joint.png', 'Resolution', 600)
