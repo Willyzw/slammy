@@ -16,16 +16,13 @@ rosinit(ipaddress)
 
 pause(1)
 %% subscribe publish to topics
-global handles % to be used in @teleop callback
 % laser
-handles.laserSub = rossubscriber("/scan","BufferSize",10);
-receive(handles.laserSub,10);
-% keyboard (teleop)
-handles.velPub = rospublisher("/cmd_vel");
+laserSub = rossubscriber("/scan","BufferSize",10);
+receive(laserSub,10);
+
 
 %% Set up the plot for the laser data:
 h_fig=figure;
-set(h_fig,'KeyPressFcn',@teleop); % call back function @teleop, executed every time a key is pressed
 % plot /scan
 map.X=[0];
 map.Y=[0];
@@ -44,7 +41,7 @@ xlim([-3 3])
 pbaspect([1 1 1])
 
 %% initial map
-laserdata=receive(handles.laserSub,5);
+laserdata=receive(laserSub,5);
 rho=laserdata.Ranges;
 theta=[laserdata.AngleMin:laserdata.AngleIncrement:laserdata.AngleMax]';
 theta(rho==inf)=[];
@@ -56,7 +53,7 @@ drawnow
 while true
     
 try % try if new data is available 
-laserdata=receive(handles.laserSub,5);
+laserdata=receive(laserSub,5);
 catch % if no instead of error display time out'
     disp('timed out')
 end
