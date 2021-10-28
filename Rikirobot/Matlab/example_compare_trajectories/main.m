@@ -16,6 +16,7 @@ poses_gt(:,1:2)=poses_gt(:,1:2)/1000;
 
 % import trajectory from odometry
 load('../example_odometry/trajectory_odometry_slam_two_loops.mat')
+trajectory=trajectory*0.90
 poses_odometry = trajectory;
 
 % plot
