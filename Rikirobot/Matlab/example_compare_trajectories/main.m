@@ -16,8 +16,8 @@ poses_gt(:,1:2)=poses_gt(:,1:2)/1000;
 
 % import trajectory from odometry
 load('../example_odometry/trajectory_odometry_slam_two_loops.mat')
-% trajectory = trajectory*0.90;
-poses_odometry = trajectory;
+poses_odometry = trajectory*0.90;
+% poses_odometry = trajectory;
 
 % plot
 % figure
@@ -46,9 +46,9 @@ poses_lidar_slam(:,2)=poses_lidar_slam(:,2)+poses_gt(1,2);
 poses_lidar_slam(:,3)=poses_lidar_slam(:,3)+poses_gt(1,3);
 
 % translate and rotated poses of icp graph slam by the start pose of gt
-Poses(:,1)=Poses(:,1)+poses_gt(1,1);
-Poses(:,2)=Poses(:,2)+poses_gt(1,2);
-Poses(:,3)=Poses(:,3)+poses_gt(1,3);
+poses_icp_graph_slam(:,1)=Poses(:,1)+poses_gt(1,1);
+poses_icp_graph_slam(:,2)=Poses(:,2)+poses_gt(1,2);
+poses_icp_graph_slam(:,3)=Poses(:,3)+poses_gt(1,3);
 
 % plot
 % figure
@@ -87,33 +87,13 @@ poses_droid_mono = poses_droid_mono * 1.2;
 % exportgraphics(gca,'example_compare_trajectories_vision.png','Resolution',300)
 
 %% Quantitative result estimate-to-GT
-[~, dist1] = dsearchn(poses_gt(:,[1,2]), poses_odometry);
-g1 = repmat({'Odometry'},length(dist1), 1);
-disp("E2G Mean error of odometry: " + mean(dist1))
-
-[~, dist2] = dsearchn(poses_gt(:,[1,2]), poses_lidar_slam(:,[1,2]));
-g2 = repmat({'Lidar-slam'},length(dist2), 1);
-disp("E2G Mean error of lidar-slam: " + mean(dist2))
-
-[~, dist3] = dsearchn(poses_gt(:,[1,2]), poses_icp_graph_slam(:,[1,2]));
-g3 = repmat({'ICP-graph-slam'},length(dist3), 1);
-disp("E2G Mean error of icp-graph-slam: " + mean(dist3))
-
-[~, dist6] = dsearchn(poses_gt(:,[1,2]), poses_stereo_dso);
-g6 = repmat({'Stereo-DSO'},length(dist6), 1);
-disp("E2G Mean error of stereo-dso: " + mean(dist6))
-
-[~, dist7] = dsearchn(poses_gt(:,[1,2]), poses_orb_slam);
-g7 = repmat({'ORB-slam'},length(dist7), 1);
-disp("E2G Mean error of orb-slam: " + mean(dist7))
-
-[~, dist4] = dsearchn(poses_gt(:,[1,2]), poses_droid_mono);
-g4 = repmat({'DROID-mono'},length(dist4), 1);
-disp("E2G Mean error of droid-mono: " + mean(dist4))
-
-[~, dist5] = dsearchn(poses_gt(:,[1,2]), poses_droid_rgbd);
-g5 = repmat({'DROID-rgbd'},length(dist5), 1);
-disp("E2G Mean error of droid-rgbd: " + mean(dist5))
+[dist1, g1] = evalE2G(poses_gt, poses_odometry, 'Odometry');
+[dist2, g2] = evalE2G(poses_gt, poses_lidar_slam(:,[1,2]), 'Lidar-slam');
+[dist3, g3] = evalE2G(poses_gt, poses_icp_graph_slam(:,[1,2]), 'ICP-graph-slam');
+[dist6, g6] = evalE2G(poses_gt, poses_stereo_dso, 'Stereo-DSO');
+[dist7, g7] = evalE2G(poses_gt, poses_orb_slam, 'ORB-slam');
+[dist4, g4] = evalE2G(poses_gt, poses_droid_mono, 'DROID-mono');
+[dist5, g5] = evalE2G(poses_gt, poses_droid_rgbd, 'DROID-rgbd');
 
 dist = [dist1; dist2; dist3; dist6; dist7; dist4; dist5];
 g = [g1; g2; g3; g6; g7; g4; g5];
@@ -123,45 +103,27 @@ title('Absolute trajectory error (ATE) Estimate-to-GT')
 ylabel('Error [m]')
 
 %% Quantitative result GT-to-estimate
-[~, dist1] = dsearchn(poses_odometry, poses_gt(:,[1,2]));
-g1 = repmat({'Odometry'},length(dist1), 1);
-disp("G2E Mean error of odometry: " + mean(dist1))
-
-[~, dist2] = dsearchn(poses_lidar_slam(:,[1,2]), poses_gt(:,[1,2]));
-g2 = repmat({'Lidar-slam'},length(dist2), 1);
-disp("G2E Mean error of lidar-slam: " + mean(dist2))
-
-[~, dist3] = dsearchn(poses_icp_graph_slam(:,[1,2]), poses_gt(:,[1,2]));
-g3 = repmat({'ICP-graph-slam'},length(dist3), 1);
-disp("G2E Mean error of icp-graph-slam: " + mean(dist3))
-
-[~, dist6] = dsearchn(poses_stereo_dso, poses_gt(:,[1,2]));
-g6 = repmat({'Stereo-DSO'},length(dist6), 1);
-disp("G2E Mean error of stereo-dso: " + mean(dist6))
-
-[~, dist7] = dsearchn(poses_orb_slam, poses_gt(:,[1,2]));
-g7 = repmat({'ORB-slam'},length(dist7), 1);
-disp("G2E Mean error of orb-slam: " + mean(dist7))
-
-[~, dist4] = dsearchn(poses_droid_mono, poses_gt(:,[1,2]));
-g4 = repmat({'DROID-mono'},length(dist4), 1);
-disp("G2E Mean error of droid-mono: " + mean(dist4))
-
-[~, dist5] = dsearchn(poses_droid_rgbd, poses_gt(:,[1,2]));
-g5 = repmat({'DROID-rgbd'},length(dist5), 1);
-disp("G2E Mean error of droid-rgbd: " + mean(dist5))
+[dist1, g1] = evalG2E(poses_gt, poses_odometry, 'Wheel Odometry');
+[dist2, g2] = evalG2E(poses_gt, poses_lidar_slam(:,[1,2]), 'Matlab-Lidar-slam');
+[dist3, g3] = evalG2E(poses_gt, poses_icp_graph_slam(:,[1,2]), 'ICP-graph-slam');
+[dist6, g6] = evalG2E(poses_gt, poses_stereo_dso, 'Stereo-DSO');
+[dist7, g7] = evalG2E(poses_gt, poses_orb_slam, 'ORB-slam');
+[dist4, g4] = evalG2E(poses_gt, poses_droid_mono, 'DROID-mono*');
+[dist5, g5] = evalG2E(poses_gt, poses_droid_rgbd, 'DROID-rgbd');
 
 dist = [dist1; dist2; dist3; dist6; dist7; dist4; dist5];
 g = [g1; g2; g3; g6; g7; g4; g5];
-figure
-boxplot(dist, g)
-title('Absolute trajectory error (ATE) GT-to-Estimate')
-ylabel('Error [m]')
+
+figure('Position', [10 10 800 300]);
+boxplot(dist, g, 'Whisker', 1e4)
+% title('Absolute trajectory error (ATE) GT-to-Estimate')
+ylabel('Translational Error [m]')
+exportgraphics(gca, 'ATE_G2E.png', 'Resolution', 600)
 
 %% Joint figure
 figure('Position', [10 10 1200 600]);
 t = tiledlayout(1,3,'Padding','tight');
-axis_limits = [-0.5, 4.0, -0.5, 6];
+axis_limits = [-1, 4.5, -1, 7];
 
 nexttile
 plot(poses_gt(:,1),poses_gt(:,2),'.-k')
@@ -202,7 +164,7 @@ plot(poses_droid_rgbd(:,1), poses_droid_rgbd(:,2),'.-m', 'markerSize', 1)
 
 plot(poses_gt(1,1), poses_gt(1,2), 'b>', 'markerSize', 2, 'LineWidth',3)
 plot(poses_gt(length(poses_gt),1), poses_gt(length(poses_gt),2), 'rv', 'markerSize', 2, 'LineWidth',3)
-legend('GT','Wheel Odom','Lidar SLAM','Lidar ICP Graph SLAM', 'Stereo ORB-SLAM','Stereo DSO','DROID mono*','DROID rgbd','Start', 'End','Location','eastoutside')
+legend('GT','Wheel Odometry','Matlab-Lidar-slam','ICP-Graph-slam', 'Stereo-ORB-SLAM','Stereo-DSO','DROID-mono*','DROID-rgbd','Start', 'End','Location','eastoutside')
 axis equal
 axis(axis_limits)
 grid on
@@ -223,4 +185,20 @@ function poses = load_and_process_trj(filename, xy_indices, poses_gt)
     % translate and rotated poses_slam by the start pose of gt
     poses(:,1) = poses(:,1)+poses_gt(1,1);
     poses(:,2) = poses(:,2)+poses_gt(1,2);
+end
+
+function [dist, label] = evalE2G(poses_gt, poses_est, name)
+    [~, dist] = dsearchn(poses_gt(:,[1,2]), poses_est);
+    label = repmat({name}, length(dist), 1);
+    disp("E2G error " + length(poses_est) + " of " + name + ": " + max(dist) + " RMSE: " + RMSE(dist))
+end
+
+function [dist, label] = evalG2E(poses_gt, poses_est, name)
+    [~, dist] = dsearchn(poses_est, poses_gt(:,[1,2]));
+    label = repmat({name}, length(dist), 1);
+    disp("G2E error " + length(poses_est) + " of " + name + ": " + max(dist) + " RMSE: " + RMSE(dist))
+end
+
+function rmse = RMSE(errors)
+    rmse = sqrt(mean(errors.^2));  % Root Mean Squared Error
 end
