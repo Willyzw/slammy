@@ -19,10 +19,10 @@ time_start = 1;
 delta = 2;
 
 % end point in time in bag
-time_end = bSel.NumMessages;
+time_end = bSel.NumMessages-1;
 
 % icp inlier ratio
-icpInlierRatio = 0.65;
+icpInlierRatio = 0.8;
 
 %% loop closure settings
 
@@ -30,7 +30,7 @@ icpInlierRatio = 0.65;
 distForLoopClosure = 1.0;
 
 % maximum icp matching error for loop closure
-maxErrorLoopClosure = 0.1;
+maxErrorLoopClosure = 0.04;
 
 % grid size for downsampling
 dsGrid = 0.05;
@@ -61,15 +61,45 @@ eul=[0,0,0];
 %% loop over rosbag
 for t = time_start : delta : time_end
     
+    %% extract first point cloud
     % read scan from rosbag
     ScanMsg = readMessages(bSel,t);
     
     % convert to cartesian coordinates
     cart = readCartesian(ScanMsg{1});
+    t0 = ScanMsg{1}.Header.Stamp.Sec+ 10^-9*ScanMsg{1}.Header.Stamp.Nsec;
     
     % create point cloud
     PC_new = pointCloud([cart,zeros(size(cart,1),1)]);
     PC_new = pcdownsample(PC_new,'gridAverage',dsGrid);
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% rotation compensation
+    % read scan from rosbag
+    ScanMsg_rotComp = readMessages(bSel,t+1);
+    t1 = ScanMsg_rotComp{1}.Header.Stamp.Sec+ 10^-9*ScanMsg_rotComp{1}.Header.Stamp.Nsec;
+    
+    % convert to cartesian coordinates
+    cart_rotComp = readCartesian(ScanMsg_rotComp{1});
+    
+    % create point cloud
+    PC_new_new = pointCloud([cart_rotComp,zeros(size(cart_rotComp,1),1)]);
+    PC_new_new = pcdownsample(PC_new_new,'gridAverage',dsGrid);
+    
+    %% compare consecutive point clouds for motion compensation
+    [tform_rotComp,movingReg,rmse] = pcregistericp(PC_new_new,PC_new,'MaxIterations',200,'Tolerance',[0.001,0.001],'InlierRatio',0.8);
+    eul = rotm2eul(tform_rotComp.Rotation,'XYZ');
+    yawRate = eul(3)/(t1-t0);
+    
+    %% generate compensated point cloud
+    % convert to cartesian coordinates
+    ScanMsg{1}.AngleIncrement = ( ScanMsg{1}.AngleMax-ScanMsg{1}.AngleMin +eul(3) ) / size(ScanMsg{1}.Ranges,1);
+    cart = readCartesian(ScanMsg{1});
+    
+    % create point cloud
+    PC_new = pointCloud([cart,zeros(size(cart,1),1)]);
+    PC_new = pcdownsample(PC_new,'gridAverage',dsGrid);
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     if t == time_start
         PC_old = PC_new;
@@ -78,7 +108,7 @@ for t = time_start : delta : time_end
     end
     
     % register pcs with icp and use last transform as start point
-    [tformNew,movingReg,rmse] = pcregistericp(PC_new,PC_old,'MaxIterations',100,'Tolerance',[0.001,0.001],'InitialTransform',tform,'InlierRatio',icpInlierRatio);
+    [tformNew,movingReg,rmse] = pcregistericp(PC_new,PC_old,'MaxIterations',200,'Tolerance',[0.001,0.001],'InitialTransform',tform,'InlierRatio',icpInlierRatio);
     disp(rmse);
     
     % if error is bigger than a threshold or the roboter moved more than a
@@ -192,11 +222,40 @@ for k = 1 : pg.NumNodes
     Pose = nodeEstimates(pg,k);
     t = PoseTimes(k);
     
-    % read scan from rosbag
+     % read scan from rosbag
     ScanMsg = readMessages(bSel,t);
     
     % convert to cartesian coordinates
     cart = readCartesian(ScanMsg{1});
+    t0 = ScanMsg{1}.Header.Stamp.Sec+ 10^-9*ScanMsg{1}.Header.Stamp.Nsec;
+    
+    % create point cloud
+    PC_new = pointCloud([cart,zeros(size(cart,1),1)]);
+    PC_new = pcdownsample(PC_new,'gridAverage',dsGrid);
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% rotation compensation
+    % read scan from rosbag
+    ScanMsg_rotComp = readMessages(bSel,t+1);
+    t1 = ScanMsg_rotComp{1}.Header.Stamp.Sec+ 10^-9*ScanMsg_rotComp{1}.Header.Stamp.Nsec;
+    
+    % convert to cartesian coordinates
+    cart_rotComp = readCartesian(ScanMsg_rotComp{1});
+    
+    % create point cloud
+    PC_new_new = pointCloud([cart_rotComp,zeros(size(cart_rotComp,1),1)]);
+    PC_new_new = pcdownsample(PC_new_new,'gridAverage',dsGrid);
+    
+    %% compare consecutive point clouds for motion compensation
+    [tform_rotComp,movingReg,rmse] = pcregistericp(PC_new_new,PC_new,'MaxIterations',100,'Tolerance',[0.001,0.001],'InlierRatio',0.8);
+    eul = rotm2eul(tform_rotComp.Rotation,'XYZ');
+    yawRate = eul(3)/(t1-t0);
+    
+    %% generate compensated point cloud
+    % convert to cartesian coordinates
+    ScanMsg{1}.AngleIncrement = ( ScanMsg{1}.AngleMax-ScanMsg{1}.AngleMin +eul(3) ) / size(ScanMsg{1}.Ranges,1);
+    cart = readCartesian(ScanMsg{1});
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     R = eul2rotm([0,0,Pose(3)],'XYZ');
     R_2d = R(1:2,1:2);
