@@ -83,6 +83,14 @@ Axis and sensitivity can be changed in:
 
 ## Display
 
+ this python script to show status, time and ip
+ 
+ its entered in `crontab -e`
+ 
+ `@reboot python /home/slammy/hd44780/display_slammy.py`
+
+to start at reboot
+````
 import lcddriver
 from time import *
 import socket   
@@ -155,7 +163,7 @@ while True:
 
 	lcd.lcd_display_string("ROS:"+ROS_stat+" LIDAR:"+LDR_stat, 3)
         lcd.lcd_display_string("Ardu:"+ARD_stat+" PS4:"+PS4_stat, 4)
-	time.sleep(0.5)````
+	time.sleep(0.5)
 
 ````
 ## connect to master from extern pc (ubuntu)
