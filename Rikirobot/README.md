@@ -25,8 +25,8 @@ you might need an ip scanner to find the ip.
 
 If you never connected to your local wifi, use hdmi, mouse and keyboard.
 
-## Set up the Lidar, odometry and tele op (PS5)
-`sudo ./Desktop/run_riki.sh`
+## Set up the Lidar, odometry and tele op (PS4)
+`sudo ./auto_start.sh`
 
 (sudo to set time).
 
@@ -34,26 +34,32 @@ Content:
 ````
 #!/bin/bash
 
-#start all stuff for rikirobot
-#user rikirobot
+#start all stuff for slammy
+#user slammy
 #pw: 123456
 #usual ip 141.58.125.212
 
-#get ntim
-#sudo date -s "$(wget -qSO- --max-redirect=0 google.com 2>&1 | grep Date: | cut -d' ' -f5-8)Z"
+sleep 10
 
+# source bash
+source ~/catkin_ws/devel/setup.bash
+
+# start roscore
+roscore &
+sleep 2
 
 # start lidar
-roslaunch rplidar_ros rplidar.launch &
+roslaunch --wait rplidar_ros rplidar.launch &
 
-# start car with odometry
-roslaunch rikirobot bringup.launch &
+sleep 10
 
-# start tele operator (keyboard)
-rosrun teleop_twist_keyboard teleop_twist_keyboard.py &
+# start motorboard
+rosrun rosserial_python serial_node.py /dev/ttyUSB1 &
 
-# start tele operator (PS4 Controler)
-roslaunch ds4_driver ds4_twist.launch dof:=2
+sleep 10
+
+#start controler
+roslaunch ds4_driver ds4_twist.launch dof:=2 &
 
 ````
 ### Use PS4 DualShock Controler as remote
@@ -74,6 +80,84 @@ If connected solid purple light and:
 Axis and sensitivity can be changed in:
 `/catkin_ws/src/ds4_driver/config/twist_2dof.yaml`
 
+
+## Display
+
+import lcddriver
+from time import *
+import socket   
+from datetime import datetime
+import os
+import time
+
+# set up display
+lcd = lcddriver.lcd()
+lcd.lcd_clear()
+
+# init status
+ROS_stat = "OFF"
+LDR_stat = "OFF" 
+ARD_stat = "OFF" 
+PS4_stat = "OFF" 
+
+
+
+def extract_ip():
+ 	'''gets the ip adresse and retursn as string'''
+    	st = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    	try:       
+        	st.connect(('10.255.255.255', 1))
+        	IP = st.getsockname()[0]
+    	except Exception:
+        	IP = '127.0.0.1'
+    	finally:
+        	st.close()
+    	return IP
+
+
+while True:
+	# get ip
+
+	hostname=socket.gethostname()   
+	IPAddr=socket.gethostbyname(hostname)   
+
+	#get time
+	now=datetime.now()
+
+	# list ros topics
+	rtopics  = os.popen('rostopic list').readlines()
+	# print(rtopics)
+	# check if topics exist
+	if '/scan\n' in rtopics :
+    		LDR_stat=" ON"
+	else:
+    		LDR_stat="OFF"
+	
+	if '/cmd_vel\n' in rtopics:
+		ARD_stat = " ON"
+	else:
+		ARD_stat="OFF"
+	
+	if '/rosout\n' in rtopics:
+		ROS_stat= " ON"
+	else:
+		ROS_stat="OFF"
+	if '/status\n' in rtopics:
+		PS4_stat = " ON"
+	else:
+		PS4_stat = "OFF"
+
+ 
+
+	# display all
+	lcd.lcd_display_string(now.strftime("%d.%m.%Y, %H:%M:%S"), 1)	
+	lcd.lcd_display_string("IP:"+extract_ip(), 2)
+
+	lcd.lcd_display_string("ROS:"+ROS_stat+" LIDAR:"+LDR_stat, 3)
+        lcd.lcd_display_string("Ardu:"+ARD_stat+" PS4:"+PS4_stat, 4)
+	time.sleep(0.5)````
+
+````
 ## connect to master from extern pc (ubuntu)
 
 Set ip to master

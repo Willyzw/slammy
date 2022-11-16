@@ -11,14 +11,14 @@ close all
 %% set up node and connect to Master
 rosshutdown
 
-ipaddress = "http://141.58.125.219:11311";
+ipaddress = "http://141.58.125.227:11311";
 rosinit(ipaddress)
 
 pause(1)
 %% subscribe publish to topics
 % laser
-laserSub = rossubscriber("/scan","BufferSize",10);
-receive(laserSub,10);
+laserSub = rossubscriber("/scan","BufferSize",20);
+receive(laserSub,20);
 
 
 %% Set up the plot for the laser data:
