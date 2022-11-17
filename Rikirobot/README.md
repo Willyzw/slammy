@@ -85,6 +85,17 @@ Axis and sensitivity can be changed in:
 Follow this:
 https://tutorials-raspberrypi.de/hd44780-lcd-display-per-i2c-mit-dem-raspberry-pi-ansteuern/
 
+enable i2c
+in /boot/config.txt
+````
+## i2c_arm
+##     Enable the ARM's i2c interface
+##
+##     Default off.
+##
+dtparam=i2c_arm=off
+````
+
  this python script to show status, time and ip
  
  its entered in `crontab -e`
