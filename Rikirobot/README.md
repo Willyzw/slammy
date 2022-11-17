@@ -82,6 +82,8 @@ Axis and sensitivity can be changed in:
 
 
 ## Display
+Follow this:
+https://tutorials-raspberrypi.de/hd44780-lcd-display-per-i2c-mit-dem-raspberry-pi-ansteuern/
 
  this python script to show status, time and ip
  
